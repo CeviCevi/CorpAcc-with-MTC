@@ -1,3 +1,4 @@
+import 'package:corp_app/app/fish/fish_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -9,8 +10,15 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(body: Center(child: Text('Hello World!'))),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.from(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.purple,
+          brightness: .dark,
+        ),
+      ),
+      home: Scaffold(body: StyleGuideScreen()),
     );
   }
 }

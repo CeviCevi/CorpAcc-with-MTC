@@ -1,4 +1,4 @@
-import 'package:corp_app/app/fish/fish_screen.dart';
+import 'package:corp_app/presentation/screen/navigation_screen/navigation_Screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -18,7 +18,7 @@ class MainApp extends StatelessWidget {
           brightness: .dark,
         ),
       ),
-      home: Scaffold(body: StyleGuideScreen()),
+      home: NavigationScreen(),
     );
   }
 }

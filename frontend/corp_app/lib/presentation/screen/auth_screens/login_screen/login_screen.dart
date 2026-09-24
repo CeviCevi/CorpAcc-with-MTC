@@ -7,62 +7,28 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColor.black,
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              style: TextStyle(color: AppColor.white),
-              decoration: InputDecoration(
-                hintText: 'Логин',
-                hintStyle: TextStyle(
-                  color: AppColor.white.withAlpha((255 * 0.5).toInt()),
-                ),
-                filled: true,
-                fillColor: AppColor.darkGrey,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              obscureText: true,
-              style: TextStyle(color: AppColor.white),
-              decoration: InputDecoration(
-                hintText: 'Пароль',
-                hintStyle: TextStyle(color: AppColor.white.withOpacity(0.5)),
-                filled: true,
-                fillColor: AppColor.darkGrey,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              height: 52,
-              child: ElevatedButton(
+      body: Center(
+        child: Container(
+          width: 400,
+          height: 230,
+          padding: .symmetric(horizontal: 20, vertical: 10),
+          decoration: BoxDecoration(
+            border: Border.all(color: AppColor.black),
+            borderRadius: .circular(20),
+          ),
+          child: Column(
+            children: [
+              TextField(),
+              TextField(),
+              SizedBox(height: 30),
+              ElevatedButton(
                 onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColor.yellow,
-                  foregroundColor: AppColor.black,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text(
-                  'Продолжить',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
+                child: Text("Prodolgit", textAlign: .center),
               ),
-            ),
-          ],
+              SizedBox(height: 20),
+              InkWell(onTap: () {}, child: Text("to reg")),
+            ],
+          ),
         ),
       ),
     );

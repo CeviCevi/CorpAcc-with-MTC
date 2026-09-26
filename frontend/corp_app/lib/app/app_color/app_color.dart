@@ -10,5 +10,7 @@ class AppColor {
   static Color primaryDark = Color(0xff3f2a7a);
   static Color surface = Color(0xff1e1e1e);
   static Color surfaceAlt = Color(0xff2a2a2a);
-  static Color error = Color(0xffef5350);
+  static Color red = Colors.red;
+  static Color green = Colors.green;
+  static Color grey = const Color.fromARGB(255, 45, 45, 45);
 }

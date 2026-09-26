@@ -1,5 +1,9 @@
-import 'package:corp_app/app/app_color/app_color.dart';
+import 'package:corp_app/presentation/widget/custom_text_field/custom_text_field.dart';
 import 'package:flutter/material.dart';
+
+import '../../widget/check_block/check_block.dart';
+import '../../widget/main_tile/main_tile.dart';
+import '../../widget/start_toggle/start_toggle.dart';
 
 class MainScreen extends StatefulWidget {
   const new({super.key});
@@ -24,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
               mainAxisAlignment: .spaceEvenly,
               children: [
                 MainTile(
-                  widget: Column(
+                  child: Column(
                     children: [
                       SizedBox(height: 40),
                       Padding(
@@ -41,101 +45,56 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ),
 
-                      Radio(value: toggleStatus),
+                      SizedBox(height: 30),
+
+                      Padding(
+                        padding: const .symmetric(horizontal: 30),
+                        child: Column(
+                          spacing: 10,
+                          crossAxisAlignment: .start,
+                          children: [
+                            Text("Условия запуска"),
+                            CheckBlock(
+                              text: "Введите текст",
+                              isActive: toggleStatus,
+                            ),
+                            CheckBlock(text: "Введите текст", isActive: true),
+                            CheckBlock(text: "Введите текст", isActive: false),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                MainTile(),
+                MainTile(
+                  padding: .symmetric(horizontal: 20, vertical: 20),
+                  child: Column(
+                    spacing: 15,
+                    children: [
+                      CustomTextField(
+                        label: "Название",
+                        labelStyle: TextStyle(),
+                      ),
+
+                      CustomTextField(
+                        label: "Количество людей",
+                        labelStyle: TextStyle(),
+                      ),
+
+                      CustomTextField(
+                        label: "Описание",
+                        labelStyle: TextStyle(),
+                        maxLines: 3,
+                      ),
+                    ],
+                  ),
+                ),
                 MainTile(),
               ],
             ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class StartToggle extends StatelessWidget {
-  const new({super.key, this.recordingStatus = false, this.onTap});
-
-  final VoidCallback? onTap;
-  final bool recordingStatus;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: 250,
-        height: 50,
-        child: Stack(
-          children: [
-            Container(
-              height: 50,
-              width: .infinity,
-              color: AppColor.primaryDark,
-              child: Center(child: Text("Остановлено", textAlign: .center)),
-            ),
-
-            AnimatedPositioned(
-              duration: Duration(milliseconds: 300),
-              curve: Curves.easeInCubic,
-              left: recordingStatus ? 0 : -200,
-              child: SizedBox(
-                height: 50,
-                width: 250,
-                child: Row(
-                  children: [
-                    AnimatedOpacity(
-                      opacity: recordingStatus ? 1 : 0,
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.easeInCirc,
-                      child: Container(
-                        height: 50,
-                        width: 200,
-                        color: AppColor.primaryLight,
-                        child: Center(child: Text("Запущено")),
-                      ),
-                    ),
-                    Container(
-                      height: 50,
-                      width: 50,
-                      color: AppColor.primary,
-                      child: recordingStatus
-                          ? AnimatedOpacity(
-                              duration: Duration(milliseconds: 3000),
-                              opacity: recordingStatus ? 1 : 0,
-                              child: Icon(Icons.stop),
-                            )
-                          : AnimatedOpacity(
-                              duration: Duration(milliseconds: 3000),
-                              opacity: !recordingStatus ? 1 : 0,
-                              child: Icon(Icons.play_arrow),
-                            ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class MainTile extends StatelessWidget {
-  final Widget widget;
-  const new({super.key, this.widget = const Center()});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 500,
-      width: 300,
-      decoration: BoxDecoration(border: Border.all()),
-      child: widget,
     );
   }
 }

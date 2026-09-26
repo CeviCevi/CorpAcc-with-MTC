@@ -128,12 +128,12 @@ class _StyleGuideScreenState extends State<StyleGuideScreen> {
             style: TextStyle(color: AppColor.white),
             decoration: InputDecoration(
               hintText: 'С ошибкой',
-              hintStyle: TextStyle(color: AppColor.error.withOpacity(0.6)),
+              hintStyle: TextStyle(color: AppColor.red.withOpacity(0.6)),
               filled: true,
               fillColor: AppColor.surface,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: AppColor.error),
+                borderSide: BorderSide(color: AppColor.red),
               ),
             ),
           ),
@@ -261,13 +261,13 @@ class _StyleGuideScreenState extends State<StyleGuideScreen> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColor.error.withOpacity(0.15),
+              color: AppColor.red.withOpacity(0.15),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColor.error.withOpacity(0.5)),
+              border: Border.all(color: AppColor.red.withOpacity(0.5)),
             ),
             child: Row(
               children: [
-                Icon(Icons.error_outline, color: AppColor.error, size: 18),
+                Icon(Icons.error_outline, color: AppColor.red, size: 18),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(

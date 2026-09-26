@@ -1,13 +1,5 @@
+import 'package:corp_app/app/app_color/app_color.dart';
 import 'package:flutter/material.dart';
-
-class AppColor {
-  static Color primary = Colors.deepPurple;
-  static Color primaryDark = Color(0xff3f2a7a);
-  static Color surface = Color(0xff1e1e1e);
-  static Color surfaceAlt = Color(0xff2a2a2a);
-  static Color white = Colors.white;
-  static Color error = Color(0xffef5350);
-}
 
 class StyleGuideScreen extends StatefulWidget {
   const StyleGuideScreen({super.key});

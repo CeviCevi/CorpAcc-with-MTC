@@ -1,5 +1,6 @@
 import 'package:corp_app/app/app_color/app_color.dart';
 import 'package:corp_app/presentation/screen/dev_screen/dev_screen.dart';
+import 'package:corp_app/presentation/screen/main_screen/main_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../widget/navigation_button/navigation_button.dart';
@@ -13,20 +14,20 @@ class NavigationScreen extends StatefulWidget {
 
 class _NavigationScreenState extends State<NavigationScreen> {
   Size screenSize = Size(0, 0);
-  int pageNum = 0;
+  int screenNum = 0;
   final List<Widget> screenList = [
-    Scaffold(),
+    MainScreen(),
     Scaffold(),
     Scaffold(),
     DevScreen(),
   ];
 
   void setScreen(int screenNum) {
-    setState(() => pageNum = screenNum);
+    setState(() => this.screenNum = screenNum);
   }
 
-  bool isThisScreen(int pageNum) {
-    return pageNum == this.pageNum;
+  bool isThisScreen(int screenNum) {
+    return screenNum == this.screenNum;
   }
 
   @override
@@ -67,7 +68,16 @@ class _NavigationScreenState extends State<NavigationScreen> {
             ),
           ),
 
-          Expanded(child: screenList[pageNum]),
+          Expanded(
+            child: Stack(
+              children: [
+                screenList[0],
+                screenNum != 0 ? screenList[screenNum] : Center(),
+              ],
+            ),
+          ),
+
+          // Expanded(child: screenList[pageNum]),
         ],
       ),
     );

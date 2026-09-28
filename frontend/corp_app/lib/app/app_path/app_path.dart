@@ -1,1 +1,3 @@
-class AppPath {}
+class AppPath {
+  static String apiPath = ""; //TODO get address
+}

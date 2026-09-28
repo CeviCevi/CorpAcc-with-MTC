@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 class TranscriptionModel {
   final String id;
   final String name;
@@ -14,4 +16,24 @@ class TranscriptionModel {
     required this.createAt,
     required this.description,
   });
+
+  @override
+  String toString() {
+    return 'TranscriptionModel{id=$id, name=$name, creatorId=$creatorId, link=$link, createAt=$createAt, description=$description}';
+  }
+
+  static TranscriptionModel get empty {
+    return TranscriptionModel(
+      id: "NoN",
+      name: "NoN",
+      creatorId: "NoN",
+      link: "/NoN",
+      createAt: "NoN",
+      description: "NoN",
+    );
+  }
+
+  void print() {
+    log(toString());
+  }
 }

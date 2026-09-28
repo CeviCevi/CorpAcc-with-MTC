@@ -30,6 +30,7 @@ class CustomTextField extends StatefulWidget {
     this.textStyle,
     this.labelStyle,
     this.hintStyle,
+    this.align,
   });
 
   final TextEditingController? controller;
@@ -59,6 +60,7 @@ class CustomTextField extends StatefulWidget {
   final TextStyle? textStyle;
   final TextStyle? labelStyle;
   final TextStyle? hintStyle;
+  final TextAlign? align;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -161,6 +163,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             autofocus: widget.autofocus,
             style: widget.textStyle ?? theme.textTheme.bodyLarge,
             cursorColor: theme.colorScheme.primary,
+            textAlign: widget.align ?? .start,
             decoration: InputDecoration(
               hintText: widget.hint,
               hintStyle:

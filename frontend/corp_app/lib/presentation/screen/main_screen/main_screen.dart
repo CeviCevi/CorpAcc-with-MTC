@@ -1,4 +1,6 @@
+import 'package:corp_app/app/app_color/app_color.dart';
 import 'package:corp_app/presentation/widget/custom_text_field/custom_text_field.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../widget/check_block/check_block.dart';
@@ -76,9 +78,29 @@ class _MainScreenState extends State<MainScreen> {
                         labelStyle: TextStyle(),
                       ),
 
-                      CustomTextField(
-                        label: "Количество людей",
-                        labelStyle: TextStyle(),
+                      Column(
+                        crossAxisAlignment: .start,
+                        spacing: 5,
+                        children: [
+                          Text("Количество участников"),
+                          Row(
+                            mainAxisAlignment: .spaceBetween,
+                            children: [
+                              Flexible(
+                                child: CustomTextField(
+                                  labelStyle: TextStyle(),
+                                  align: .center,
+                                ),
+                              ),
+                              SizedBox(width: 5),
+                              ShortButton(),
+                              SizedBox(width: 5),
+                              ShortButton(),
+                              SizedBox(width: 5),
+                              ShortButton(),
+                            ],
+                          ),
+                        ],
                       ),
 
                       CustomTextField(
@@ -94,6 +116,35 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ShortButton extends StatelessWidget {
+  const new({super.key, this.onTap, this.text = "NoN"});
+  final VoidCallback? onTap;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      onPressed: onTap,
+      padding: .zero,
+      child: Container(
+        width: 60,
+        height: 45,
+        decoration: BoxDecoration(
+          color: AppColor.grey,
+          borderRadius: .circular(15),
+        ),
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(color: AppColor.white, fontSize: 16),
+            textAlign: .center,
+          ),
+        ),
       ),
     );
   }

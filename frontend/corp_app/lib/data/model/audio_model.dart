@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 class AudioModel {
   final String id;
   final String name;
@@ -14,4 +16,24 @@ class AudioModel {
     required this.createAt,
     required this.description,
   });
+
+  @override
+  String toString() {
+    return 'AudioModel{id=$id, name=$name, creatorId=$creatorId, link=$link, createAt=$createAt, description=$description}';
+  }
+
+  static AudioModel get empty {
+    return AudioModel(
+      id: "NoN",
+      name: "NoN",
+      creatorId: "NoN",
+      link: "/NoN",
+      createAt: "NoN",
+      description: "NoN",
+    );
+  }
+
+  void print() {
+    log(toString());
+  }
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 class ContractModel {
   final String id;
   final String name;
@@ -14,4 +16,24 @@ class ContractModel {
     required this.createAt,
     required this.description,
   });
+
+  @override
+  String toString() {
+    return 'ContractModel{id=$id, name=$name, creatorId=$creatorId, link=$link, createAt=$createAt, description=$description}';
+  }
+
+  static ContractModel get empty {
+    return ContractModel(
+      id: "NoN",
+      name: "NoN",
+      creatorId: "NoN",
+      link: "/NoN",
+      createAt: "NoN",
+      description: "NoN",
+    );
+  }
+
+  void print() {
+    log(toString());
+  }
 }

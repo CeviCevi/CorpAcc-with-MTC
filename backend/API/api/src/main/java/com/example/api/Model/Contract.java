@@ -11,5 +11,5 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Contract extends UserResource {
+public class Contract{
 }

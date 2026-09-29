@@ -13,61 +13,61 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.api.Model.User;
-import com.example.api.Service.UserService;
+import com.example.api.Model.Audio;
+import com.example.api.Service.AudioService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController 
-@RequestMapping ("/api/users")
+@RequestMapping ("/api/audios")
 @AllArgsConstructor 
 
 
-public class UserController {
+public class AudioController {
     @Autowired 
-    private UserService userService;
+    private AudioService audioService;
 
     @PostMapping 
-    public ResponseEntity<?> createUser (@Valid @RequestBody User UserReq){
+    public ResponseEntity<?> createAudio (@Valid @RequestBody Audio AudioReq){
         
-        User  user = userService.createUser(UserReq);
+        Audio  audio = audioService.createAudio(AudioReq);
 
-        return ResponseEntity.status(HttpStatus.OK).body(user);
+        return ResponseEntity.status(HttpStatus.OK).body(audio);
 
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 
-        userService.deleteUser(id);
+        audioService.deleteAudio(id);
 
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(
+    public ResponseEntity<?> updateAudio(
             @PathVariable Long id,
-            @RequestBody User userReq
+            @RequestBody Audio audioReq
     ) {
 
-        userReq.setId(id);
+        audioReq.setId(id);
 
-        User user = userService.updateUser(userReq);
+        Audio audio = audioService.updateAudio(audioReq);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(user);
+                .body(audio);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUser(@PathVariable Long id) {
+    public ResponseEntity<?> getAudio(@PathVariable Long id) {
 
-        User user = userService.getUser(id);
+        Audio audio = audioService.getAudio(id);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(user);
+                .body(audio);
     }
 
 }

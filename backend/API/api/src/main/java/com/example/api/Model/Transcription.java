@@ -11,5 +11,5 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Transcription extends UserResource {
+public class Transcription{
 }

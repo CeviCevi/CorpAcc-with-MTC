@@ -10,33 +10,33 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.api.Model.User;
-import com.example.api.Repository.UserRepository;
+import com.example.api.Model.Contract;
+import com.example.api.Repository.ContractRepository;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @Service
-@AllArgsConstructor
-public class UserService {
+@AllArgsConstructor 
+public class ContractService {
 
-    private UserRepository userRepository;
+    private ContractRepository contractRepository;
 
-    public User createUser(User user) {
-        return userRepository.save(user);
+    public Contract createContract(Contract contract) {
+        return contractRepository.save(contract);
     }
 
-    public User updateUser(User user) {
-        return userRepository.save(user);
+    public Contract deleteContract(Long id) {
+    contractRepository.deleteById(id);
     }
 
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    public Contract updateContract(Contract contract) {
+        return contractRepository.save(contract);
     }
 
-    public User getUser(Long id) {
+    public Contract getContract(Long id) {
 
-    return userRepository.findById(id).get();
+    return contractRepository.findById(id).get();
 
 }
 }

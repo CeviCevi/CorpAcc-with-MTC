@@ -13,61 +13,61 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.api.Model.User;
-import com.example.api.Service.UserService;
+import com.example.api.Model.Transcription;
+import com.example.api.Service.TranscriptionService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController 
-@RequestMapping ("/api/users")
+@RequestMapping ("/api/transcriptions")
 @AllArgsConstructor 
 
 
-public class UserController {
+public class TranscriptionController {
     @Autowired 
-    private UserService userService;
+    private TranscriptionService transcriptionService;
 
     @PostMapping 
-    public ResponseEntity<?> createUser (@Valid @RequestBody User UserReq){
+    public ResponseEntity<?> createTranscription (@Valid @RequestBody Transcription TranscriptionReq){
         
-        User  user = userService.createUser(UserReq);
+        Transcription  transcription = transcriptionService.createTranscription(TranscriptionReq);
 
-        return ResponseEntity.status(HttpStatus.OK).body(user);
+        return ResponseEntity.status(HttpStatus.OK).body(transcription);
 
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 
-        userService.deleteUser(id);
+        transcriptionService.deleteTranscription(id);
 
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(
+    public ResponseEntity<?> updateTranscription(
             @PathVariable Long id,
-            @RequestBody User userReq
+            @RequestBody Transcription transcriptionReq
     ) {
 
-        userReq.setId(id);
+        transcriptionReq.setId(id);
 
-        User user = userService.updateUser(userReq);
+        Transcription transcription = transcriptionService.updateTranscription(transcriptionReq);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(user);
+                .body(transcription);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUser(@PathVariable Long id) {
+    public ResponseEntity<?> getTranscription(@PathVariable Long id) {
 
-        User user = userService.getUser(id);
+        Transcription transcription = transcriptionService.getTranscription(id);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(user);
+                .body(transcription);
     }
 
 }

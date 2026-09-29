@@ -10,33 +10,34 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.api.Model.User;
-import com.example.api.Repository.UserRepository;
+import com.example.api.Model.Audio;
+import com.example.api.Repository.AudioRepository;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @Service
-@AllArgsConstructor
-public class UserService {
+@AllArgsConstructor 
+public class AudioService {
 
-    private UserRepository userRepository;
+    private AudioRepository audioRepository;
 
-    public User createUser(User user) {
-        return userRepository.save(user);
+    public Audio createAudio(Audio audio) {
+        return audioRepository.save(audio);
     }
 
-    public User updateUser(User user) {
-        return userRepository.save(user);
+    public Audio deleteAudio(Long id) {
+    audioRepository.deleteById(id);
     }
 
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    public Audio updateAudio(Audio audio) {
+        return audioRepository.save(audio);
     }
 
-    public User getUser(Long id) {
+    public Audio getAudio(Long id) {
 
-    return userRepository.findById(id).get();
+    return audioRepository.findById(id).get();
 
 }
 }
+

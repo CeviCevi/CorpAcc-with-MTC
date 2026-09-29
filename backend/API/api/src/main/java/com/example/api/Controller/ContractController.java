@@ -13,61 +13,62 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.api.Model.User;
-import com.example.api.Service.UserService;
+import com.example.api.Model.Contract;
+import com.example.api.Service.ContractService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController 
-@RequestMapping ("/api/users")
+@RequestMapping ("/api/contracts")
 @AllArgsConstructor 
 
 
-public class UserController {
+public class ContractController {
     @Autowired 
-    private UserService userService;
+    private ContractService contractService;
 
     @PostMapping 
-    public ResponseEntity<?> createUser (@Valid @RequestBody User UserReq){
+    public ResponseEntity<?> createContract (@Valid @RequestBody Contract ContractReq){
         
-        User  user = userService.createUser(UserReq);
+        Contract  contract = contractService.createContract(ContractReq);
 
-        return ResponseEntity.status(HttpStatus.OK).body(user);
+        return ResponseEntity.status(HttpStatus.OK).body(contract);
 
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteContract(@PathVariable Long id) {
 
-        userService.deleteUser(id);
+        contractService.deleteContract(id);
 
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(
+    public ResponseEntity<?> updateContract(
             @PathVariable Long id,
-            @RequestBody User userReq
+            @RequestBody Contract contractReq
     ) {
 
-        userReq.setId(id);
+        contractReq.setId(id);
 
-        User user = userService.updateUser(userReq);
+        Contract contract = contractService.updateContract(contractReq);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(user);
+                .body(contract);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUser(@PathVariable Long id) {
+    public ResponseEntity<?> getContract(@PathVariable Long id) {
 
-        User user = userService.getUser(id);
+        Contract contract = contractService.getContract(id);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(user);
+                .body(contract);
     }
 
 }
+

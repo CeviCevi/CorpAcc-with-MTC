@@ -11,5 +11,5 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Audio extends UserResource {
+public class Audio{
 }

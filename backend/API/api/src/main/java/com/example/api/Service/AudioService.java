@@ -1,19 +1,12 @@
 package com.example.api.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
 
 import com.example.api.Model.Audio;
 import com.example.api.Repository.AudioRepository;
-
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -26,15 +19,20 @@ public class AudioService {
         return audioRepository.save(audio);
     }
 
-    public Audio deleteAudio(Long id) {
-    audioRepository.deleteById(id);
+    public boolean deleteAudio(UUID id) {
+        try {
+            audioRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            return false;   
+        }
     }
 
     public Audio updateAudio(Audio audio) {
         return audioRepository.save(audio);
     }
 
-    public Audio getAudio(Long id) {
+    public Audio getAudio(UUID id) {
 
     return audioRepository.findById(id).get();
 

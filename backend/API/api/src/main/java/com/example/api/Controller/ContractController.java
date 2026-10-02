@@ -1,5 +1,7 @@
 package com.example.api.Controller;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +40,7 @@ public class ContractController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteContract(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteContract(@PathVariable UUID id) {
 
         contractService.deleteContract(id);
 
@@ -47,7 +49,7 @@ public class ContractController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateContract(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @RequestBody Contract contractReq
     ) {
 
@@ -61,7 +63,7 @@ public class ContractController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getContract(@PathVariable Long id) {
+    public ResponseEntity<?> getContract(@PathVariable UUID id) {
 
         Contract contract = contractService.getContract(id);
 

@@ -1,5 +1,7 @@
 package com.example.api.Controller;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +40,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
 
         userService.deleteUser(id);
 
@@ -47,7 +49,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @RequestBody User userReq
     ) {
 
@@ -61,7 +63,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUser(@PathVariable Long id) {
+    public ResponseEntity<?> getUser(@PathVariable UUID id) {
 
         User user = userService.getUser(id);
 

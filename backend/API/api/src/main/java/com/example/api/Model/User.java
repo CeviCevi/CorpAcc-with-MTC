@@ -1,10 +1,19 @@
 package com.example.api.Model;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
+@AllArgsConstructor 
+@NoArgsConstructor 
+@Getter 
+@Setter 
 public class User {
 
     @Id
@@ -18,16 +27,20 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
+    @Column(name = "password", nullable = false)
+    private String password;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
+
+    @Column(name = "x")
+    private String x;
+
+    @Column(name = "y")
+    private String y;
 
     @PrePersist
     protected void onCreate() {
         createdAt = Instant.now();
     }
-
-    // getters and setters
 }

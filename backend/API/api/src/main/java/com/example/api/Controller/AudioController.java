@@ -1,5 +1,7 @@
 package com.example.api.Controller;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +23,10 @@ import lombok.AllArgsConstructor;
 
 @RestController 
 @RequestMapping ("/api/audios")
-@AllArgsConstructor 
 
 
 public class AudioController {
+
     @Autowired 
     private AudioService audioService;
 
@@ -38,7 +40,7 @@ public class AudioController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
 
         audioService.deleteAudio(id);
 
@@ -47,7 +49,7 @@ public class AudioController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAudio(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @RequestBody Audio audioReq
     ) {
 
@@ -61,7 +63,7 @@ public class AudioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getAudio(@PathVariable Long id) {
+    public ResponseEntity<?> getAudio(@PathVariable UUID id) {
 
         Audio audio = audioService.getAudio(id);
 

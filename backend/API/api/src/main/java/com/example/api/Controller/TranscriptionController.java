@@ -1,5 +1,7 @@
 package com.example.api.Controller;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +40,7 @@ public class TranscriptionController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
 
         transcriptionService.deleteTranscription(id);
 
@@ -47,7 +49,7 @@ public class TranscriptionController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTranscription(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @RequestBody Transcription transcriptionReq
     ) {
 
@@ -61,7 +63,7 @@ public class TranscriptionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getTranscription(@PathVariable Long id) {
+    public ResponseEntity<?> getTranscription(@PathVariable UUID id) {
 
         Transcription transcription = transcriptionService.getTranscription(id);
 

@@ -2,6 +2,7 @@ import 'package:corp_app/app/app_color/app_color.dart';
 import 'package:corp_app/presentation/widget/custom_text_field/custom_text_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../widget/check_block/check_block.dart';
 import '../../widget/main_tile/main_tile.dart';
@@ -90,14 +91,17 @@ class _MainScreenState extends State<MainScreen> {
                                 child: CustomTextField(
                                   labelStyle: TextStyle(),
                                   align: .center,
+                                  inputFormatters: <TextInputFormatter>[
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
                                 ),
                               ),
                               SizedBox(width: 5),
-                              ShortButton(),
+                              ShortButton(text: "2"),
                               SizedBox(width: 5),
-                              ShortButton(),
+                              ShortButton(text: "3"),
                               SizedBox(width: 5),
-                              ShortButton(),
+                              ShortButton(text: "5"),
                             ],
                           ),
                         ],
@@ -135,8 +139,9 @@ class ShortButton extends StatelessWidget {
         width: 60,
         height: 45,
         decoration: BoxDecoration(
-          color: AppColor.grey,
+          color: AppColor.primary,
           borderRadius: .circular(15),
+          boxShadow: [BoxShadow(color: AppColor.greenBlue, blurRadius: 3)],
         ),
         child: Center(
           child: Text(

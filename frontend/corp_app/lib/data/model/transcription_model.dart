@@ -8,7 +8,7 @@ class TranscriptionModel {
   final String createAt;
   final String description;
 
-  new({
+  const new({
     required this.id,
     required this.name,
     required this.creatorId,
@@ -22,16 +22,14 @@ class TranscriptionModel {
     return 'TranscriptionModel{id=$id, name=$name, creatorId=$creatorId, link=$link, createAt=$createAt, description=$description}';
   }
 
-  static TranscriptionModel get empty {
-    return TranscriptionModel(
-      id: "NoN",
-      name: "NoN",
-      creatorId: "NoN",
-      link: "/NoN",
-      createAt: "NoN",
-      description: "NoN",
-    );
-  }
+  static const empty = TranscriptionModel(
+    id: "NoN",
+    name: "NoN",
+    creatorId: "NoN",
+    link: "/NoN",
+    createAt: "NoN",
+    description: "NoN",
+  );
 
   void print() {
     log(toString());

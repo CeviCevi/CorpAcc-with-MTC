@@ -25,6 +25,7 @@ class StartToggle extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColor.primaryLight,
                   borderRadius: .vertical(bottom: .circular(5)),
+                  boxShadow: [BoxShadow(blurRadius: 3, color: AppColor.grey)],
                 ),
                 child: Center(
                   child: Text("00:21", style: TextStyle(fontSize: 12)),
@@ -35,12 +36,18 @@ class StartToggle extends StatelessWidget {
 
           GestureDetector(
             onTap: onTap,
-            child: Container(
+            child: AnimatedContainer(
               width: 250,
               height: 50,
+              duration: Duration(milliseconds: 300),
               decoration: BoxDecoration(
                 borderRadius: .circular(15),
-                boxShadow: [BoxShadow(blurRadius: 3, color: AppColor.black)],
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 3,
+                    color: AppColor.black.withAlpha(recordingStatus ? 255 : 50),
+                  ),
+                ],
               ),
               clipBehavior: Clip.antiAlias,
 
@@ -81,7 +88,16 @@ class StartToggle extends StatelessWidget {
                           Container(
                             height: 50,
                             width: 50,
-                            color: AppColor.primary,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 5,
+                                  blurStyle: .outer,
+                                  color: AppColor.darkGrey,
+                                ),
+                              ],
+                              color: AppColor.primary,
+                            ),
                             child: recordingStatus
                                 ? AnimatedOpacity(
                                     duration: Duration(milliseconds: 300),

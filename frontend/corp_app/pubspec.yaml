@@ -7,6 +7,10 @@ environment:
   sdk: ^3.13.4
 
 dependencies:
+  dio: ^5.11.1
+  shared_preferences: 
+  path_provider:
+  drift:
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
@@ -16,7 +20,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  dio: ^5.11.1
-
+  drift_dev: 
 flutter:
   uses-material-design: true

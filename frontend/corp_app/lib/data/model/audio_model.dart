@@ -8,7 +8,7 @@ class AudioModel {
   final String createAt;
   final String description;
 
-  new({
+  const new({
     required this.id,
     required this.name,
     required this.creatorId,
@@ -22,16 +22,14 @@ class AudioModel {
     return 'AudioModel{id=$id, name=$name, creatorId=$creatorId, link=$link, createAt=$createAt, description=$description}';
   }
 
-  static AudioModel get empty {
-    return AudioModel(
-      id: "NoN",
-      name: "NoN",
-      creatorId: "NoN",
-      link: "/NoN",
-      createAt: "NoN",
-      description: "NoN",
-    );
-  }
+  static const empty = AudioModel(
+    id: "NoN",
+    name: "NoN",
+    creatorId: "NoN",
+    link: "/NoN",
+    createAt: "NoN",
+    description: "NoN",
+  );
 
   void print() {
     log(toString());

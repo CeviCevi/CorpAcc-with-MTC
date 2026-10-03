@@ -46,4 +46,11 @@ CREATE TABLE transcription (
     UNIQUE (creator_id, link)
 );
 
-
+CREATE TABLE corporation (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    corp_id TEXT NOT NULL,
+    user_id TEXT NOT NULL,
+    x TEXT,
+    y TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+);

@@ -24,7 +24,7 @@ public class AudioService {
             audioRepository.deleteById(id);
             return true;
         } catch (Exception e) {
-            return false;   
+            throw e; 
         }
     }
 

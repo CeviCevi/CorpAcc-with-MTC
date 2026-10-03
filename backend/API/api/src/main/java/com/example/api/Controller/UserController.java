@@ -2,10 +2,8 @@ package com.example.api.Controller;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,49 +25,46 @@ import lombok.AllArgsConstructor;
 
 
 public class UserController {
-    @Autowired 
+
     private UserService userService;
 
     @PostMapping 
     public ResponseEntity<?> createUser (@Valid @RequestBody User UserReq){
-        
-        User  user = userService.createUser(UserReq);
-
-        return ResponseEntity.status(HttpStatus.OK).body(user);
-
+        try {
+            User  user = userService.createUser(UserReq);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
-
-        userService.deleteUser(id);
-
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteUser(@PathVariable UUID id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(
-            @PathVariable UUID id,
-            @RequestBody User userReq
-    ) {
-
-        userReq.setId(id);
-
-        User user = userService.updateUser(userReq);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(user);
+    public ResponseEntity<?> updateUser(@RequestBody User userReq) {
+        try {
+            User user = userService.updateUser(userReq);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUser(@PathVariable UUID id) {
-
-        User user = userService.getUser(id);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(user);
+        try {
+            User user = userService.getUser(id);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
-
 }

@@ -2,10 +2,8 @@ package com.example.api.Controller;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,49 +25,48 @@ import lombok.AllArgsConstructor;
 
 
 public class ContractController {
-    @Autowired 
+
     private ContractService contractService;
 
     @PostMapping 
     public ResponseEntity<?> createContract (@Valid @RequestBody Contract ContractReq){
-        
-        Contract  contract = contractService.createContract(ContractReq);
-
-        return ResponseEntity.status(HttpStatus.OK).body(contract);
-
+        try {
+            Contract  contract = contractService.createContract(ContractReq);
+            return ResponseEntity.ok(contract);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteContract(@PathVariable UUID id) {
-
-        contractService.deleteContract(id);
-
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteContract(@PathVariable UUID id) {
+        try {
+            contractService.deleteContract(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateContract(
-            @PathVariable UUID id,
-            @RequestBody Contract contractReq
-    ) {
-
-        contractReq.setId(id);
-
-        Contract contract = contractService.updateContract(contractReq);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(contract);
+    @PutMapping
+    public ResponseEntity<?> updateContract(@RequestBody Contract contractReq)
+    {
+        try {
+            Contract contract = contractService.updateContract(contractReq);
+            return ResponseEntity.ok(contract);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getContract(@PathVariable UUID id) {
-
-        Contract contract = contractService.getContract(id);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(contract);
+        try {
+            Contract contract = contractService.getContract(id);
+            return ResponseEntity.ok(contract);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
 }

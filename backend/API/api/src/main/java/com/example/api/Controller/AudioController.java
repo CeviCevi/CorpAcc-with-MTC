@@ -2,10 +2,9 @@ package com.example.api.Controller;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,53 +22,51 @@ import lombok.AllArgsConstructor;
 
 @RestController 
 @RequestMapping ("/api/audios")
-
-
+@AllArgsConstructor
 public class AudioController {
 
-    @Autowired 
     private AudioService audioService;
 
     @PostMapping 
     public ResponseEntity<?> createAudio (@Valid @RequestBody Audio AudioReq){
-        
-        Audio  audio = audioService.createAudio(AudioReq);
-
-        return ResponseEntity.status(HttpStatus.OK).body(audio);
-
+        try {
+            Audio  audio = audioService.createAudio(AudioReq);
+            return ResponseEntity.ok(audio);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
-
-        audioService.deleteAudio(id);
-
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteUser(@PathVariable UUID id) {
+        try {
+            audioService.deleteAudio(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateAudio(
-            @PathVariable UUID id,
-            @RequestBody Audio audioReq
-    ) {
-
-        audioReq.setId(id);
-
-        Audio audio = audioService.updateAudio(audioReq);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(audio);
+    @PutMapping
+    public ResponseEntity<?> updateAudio(@RequestBody Audio audioReq)
+    {
+        try {
+            Audio audio = audioService.updateAudio(audioReq);
+            return ResponseEntity.ok(audio);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getAudio(@PathVariable UUID id) {
-
-        Audio audio = audioService.getAudio(id);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(audio);
+        try {
+            Audio audio = audioService.getAudio(id);
+            return ResponseEntity.ok(audio);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+        
     }
 
 }

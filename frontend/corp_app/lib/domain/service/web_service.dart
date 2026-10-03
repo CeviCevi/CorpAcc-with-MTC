@@ -2,11 +2,15 @@ import 'package:corp_app/domain/repository/storage_repository.dart';
 import 'package:corp_app/domain/repository/web_repository.dart';
 
 class WebService {
-  static final WebRepository _webRepository = WebRepository();
-  static final StorageRepository _sRepository = StorageRepository.instance;
+  static WebRepository webRepository = WebRepository();
+  static StorageRepository sRepository = StorageRepository.instance;
 
   void get potato {
-    _webRepository;
-    _sRepository;
+    webRepository;
+    sRepository;
+  }
+
+  static Future<bool> getAudioById(String userId) async {
+    return true;
   }
 }

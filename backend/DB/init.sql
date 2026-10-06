@@ -5,7 +5,7 @@ CREATE TABLE users (
     name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
-    x TEXT,
+    status TEXT DEFAULT 'DEFAULT',
     y TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -13,44 +13,44 @@ CREATE TABLE users (
 CREATE TABLE audio (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     creator_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    link TEXT NOT NULL,
+    link TEXT NOT NULL UNIQUE,
     description TEXT,
     name TEXT NOT NULL,
     x TEXT,
     y TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    UNIQUE (creator_id, link)
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE TABLE contract (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     creator_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    link TEXT NOT NULL,
+    audio_id UUID NOT NULL REFERENCES audio(id) ON DELETE CASCADE,
+    link TEXT NOT NULL UNIQUE,
     description TEXT,
     name TEXT NOT NULL,
     x TEXT,
     y TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    UNIQUE (creator_id, link)
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE TABLE transcription (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     creator_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    link TEXT NOT NULL,
+    audio_id UUID NOT NULL REFERENCES audio(id) ON DELETE CASCADE,
+    link TEXT NOT NULL UNIQUE,
     description TEXT,
     name TEXT NOT NULL,
-    x DOUBLE PRECISION,
-    y DOUBLE PRECISION,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    UNIQUE (creator_id, link)
+    x TEXT,
+    y TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE TABLE corporation (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    corp_id TEXT NOT NULL,
-    user_id TEXT NOT NULL,
-    x TEXT,
+    corp_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    status TEXT DEFAULT 'DEFAULT',
     y TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+

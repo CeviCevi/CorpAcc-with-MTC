@@ -21,10 +21,10 @@ public class User {
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "password", nullable = false)
@@ -33,8 +33,9 @@ public class User {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(name = "x")
-    private String x;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Enum<UserStatus> status = UserStatus.DEFAULT;
 
     @Column(name = "y")
     private String y;

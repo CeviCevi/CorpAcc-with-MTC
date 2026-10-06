@@ -26,6 +26,10 @@ public class Transcription {
     @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "audio_id", nullable = false)
+    private Audio audio;
+
     @Column(name = "link", nullable = false, unique = true)
     private String link;
 

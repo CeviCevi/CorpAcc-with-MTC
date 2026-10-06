@@ -15,5 +15,3 @@ podman run -d \
   -v postgres_data:/var/lib/postgresql/data \
   database
 
-echo "PostgreSQL запускается..."
-

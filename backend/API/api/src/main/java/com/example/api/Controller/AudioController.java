@@ -1,5 +1,6 @@
 package com.example.api.Controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,8 @@ import com.example.api.Service.AudioService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController 
 @RequestMapping ("/api/audios")
@@ -37,7 +40,7 @@ public class AudioController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable UUID id) {
+    public ResponseEntity<?> deleteAudio(@PathVariable UUID id) {
         try {
             audioService.deleteAudio(id);
             return ResponseEntity.ok().build();
@@ -68,4 +71,24 @@ public class AudioController {
         
     }
 
+    @GetMapping("/user/{id}")
+    public ResponseEntity<?> getAudiosByUser(@PathVariable UUID creatorId) {
+        try {
+            List<Audio> list = audioService.getAudiosByUser(creatorId);
+            return ResponseEntity.ok(list);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+    
+    @GetMapping("/corp/{id}")
+    public ResponseEntity<?> getAudiosByCorp(@PathVariable UUID corpId) {
+        try {
+            List<Audio> list = audioService.getAudiosByCorp(corpId);
+            return ResponseEntity.ok(list);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+    
 }

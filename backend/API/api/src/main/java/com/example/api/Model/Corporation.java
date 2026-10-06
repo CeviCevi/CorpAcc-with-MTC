@@ -39,7 +39,8 @@ public class Corporation {
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
-    @Column(name = "corp_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "corp_id", nullable = false)
     private User corpId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -48,7 +49,7 @@ public class Corporation {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private Enum<CorpStatus> status;
+    private CorpStatus status = CorpStatus.DEFAULT;
 
     @Column(name = "y")
     private String y;

@@ -35,7 +35,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private Enum<UserStatus> status = UserStatus.DEFAULT;
+    private UserStatus status = UserStatus.DEFAULT;
 
     @Column(name = "y")
     private String y;

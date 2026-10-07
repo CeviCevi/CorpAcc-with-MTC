@@ -1,5 +1,6 @@
+import 'package:corp_app/app/app_const.dart';
 import 'package:corp_app/domain/repository/storage_repository.dart';
-import 'package:corp_app/presentation/screen/navigation_screen/navigation_Screen.dart';
+import 'package:corp_app/presentation/new/screen/navigation/navigation_screen/navigation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -10,12 +11,12 @@ void main() async {
   await windowManager.ensureInitialized();
 
   WindowOptions windowOptions = WindowOptions(
-    size: Size(400, 500),
+    size: Size(AppConst.width, AppConst.height),
     backgroundColor: Colors.transparent,
-    maximumSize: Size(400, 500),
-    minimumSize: Size(400, 500),
+    maximumSize: Size(AppConst.width, AppConst.height),
+    minimumSize: Size(AppConst.width, AppConst.height),
     titleBarStyle: TitleBarStyle.normal,
-    title: "Матвей Письконюх",
+    title: "Speech Brief x64",
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();

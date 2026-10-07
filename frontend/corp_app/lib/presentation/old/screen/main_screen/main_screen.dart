@@ -1,5 +1,5 @@
 import 'package:corp_app/app/app_color/app_color.dart';
-import 'package:corp_app/presentation/widget/custom_text_field/custom_text_field.dart';
+import 'package:corp_app/presentation/old/widget/custom_text_field/custom_text_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

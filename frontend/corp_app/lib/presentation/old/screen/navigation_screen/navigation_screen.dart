@@ -1,6 +1,6 @@
 import 'package:corp_app/app/app_color/app_color.dart';
-import 'package:corp_app/presentation/screen/dev_screen/dev_screen.dart';
-import 'package:corp_app/presentation/screen/main_screen/main_screen.dart';
+import 'package:corp_app/presentation/old/screen/dev_screen/dev_screen.dart';
+import 'package:corp_app/presentation/old/screen/main_screen/main_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../widget/navigation_button/navigation_button.dart';

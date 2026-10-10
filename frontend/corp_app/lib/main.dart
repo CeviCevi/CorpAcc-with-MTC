@@ -1,3 +1,4 @@
+import 'package:corp_app/app/app_color/app_color.dart';
 import 'package:corp_app/app/app_const.dart';
 import 'package:corp_app/domain/repository/storage_repository.dart';
 import 'package:corp_app/presentation/new/screen/navigation/navigation_screen/navigation_screen.dart';
@@ -35,10 +36,10 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.from(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.purple,
+          seedColor: AppColor.darkGrey,
           brightness: .dark,
         ),
-      ),
+      )..copyWith(scaffoldBackgroundColor: AppColor.darkGrey),
       home: NavigationScreen(),
     );
   }

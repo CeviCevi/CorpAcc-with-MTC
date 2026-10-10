@@ -16,6 +16,8 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^9.1.1
   json_annotation: ^4.12.0
+  loading_animation_widget:
+  audioplayers:
 
 dev_dependencies:
   flutter_test:

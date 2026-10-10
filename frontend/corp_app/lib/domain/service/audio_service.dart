@@ -39,7 +39,7 @@ class AudioService {
   }
 
   static Future<List<AudioModel>> getAllByUserId({
-    required AudioModel audio,
+    required String userId,
   }) async {
     //* Audio List
     return [];

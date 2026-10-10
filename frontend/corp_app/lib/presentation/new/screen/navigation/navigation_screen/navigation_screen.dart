@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:corp_app/app/app_color/app_color.dart';
 import 'package:corp_app/app/app_const.dart';
 import 'package:corp_app/data/model/user_model.dart';
+import 'package:corp_app/presentation/new/screen/navigation/history_screen/history_screen.dart';
 import 'package:corp_app/presentation/new/screen/navigation/main_screen/main_screen.dart';
 import 'package:corp_app/presentation/new/screen/navigation/profile_screen/profile_screen.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class NavigationScreen extends StatefulWidget {
 class NavigationScreenState extends State<NavigationScreen> {
   final List<Widget> screens = [
     MainScreen(),
-    Scaffold(),
+    HistoryScreen(),
     ProfileScreen(user: UserModel.empty),
   ];
 

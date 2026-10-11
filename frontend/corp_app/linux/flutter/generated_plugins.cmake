@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_linux
   ffmpeg_kit_flutter_new
+  printing
   record_linux
   screen_retriever_linux
   window_manager

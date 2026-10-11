@@ -21,6 +21,7 @@ dependencies:
   ffmpeg_kit_flutter_new: ^4.6.7
   record: ^7.1.2
   path: ^1.9.1
+  printing: ^5.15.1
 
 dev_dependencies:
   flutter_test:

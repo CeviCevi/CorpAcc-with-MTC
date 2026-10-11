@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
   ffmpeg_kit_flutter_new
+  printing
   record_windows
   screen_retriever_windows
   window_manager

@@ -1,10 +1,13 @@
 package com.example.api.Controller;
 
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,9 +16,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.api.Model.Audio;
 import com.example.api.Service.AudioService;
+import com.example.api.Service.FileService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -28,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AudioController {
 
     private AudioService audioService;
+    private FileService fileService;
 
     @PostMapping 
     public ResponseEntity<?> createAudio (@Valid @RequestBody Audio AudioReq){
@@ -86,6 +92,35 @@ public class AudioController {
         try {
             List<Audio> list = audioService.getAudiosByCorp(corpId);
             return ResponseEntity.ok(list);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/save/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> saveFile(@PathVariable("id") UUID id, @RequestParam("file") MultipartFile file) {
+        try {
+            String link = fileService.saveAudio(file);
+            Audio audio = audioService.getAudio(id);
+            audio.setLink(link);
+            audio = audioService.updateAudio(audio);
+            return ResponseEntity.status(HttpStatus.CREATED).body(audio);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<?> downloadFile(@PathVariable UUID id) {
+        try {
+            Resource file = fileService.getAudio(audioService.getAudio(id).getLink());
+            //Resource file = fileService.getAudio("audios/" + id);
+            return ResponseEntity.ok()
+                .header("Content-Disposition",
+                        "attachment; filename=\"" + id + "\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(file);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

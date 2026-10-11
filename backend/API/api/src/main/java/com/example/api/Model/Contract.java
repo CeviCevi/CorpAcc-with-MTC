@@ -30,7 +30,7 @@ public class Contract {
     @JoinColumn(name = "audio_id", nullable = false)
     private Audio audio;
 
-    @Column(name = "link", nullable = false, unique = true)
+    @Column(name = "link", unique = true)
     private String link;
 
     @Column(name = "description")

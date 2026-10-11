@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 
-import com.example.api.Model.Audio;
 import com.example.api.Model.Contract;
 
 @Component

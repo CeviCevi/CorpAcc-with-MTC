@@ -26,7 +26,7 @@ public class Audio {
     @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
 
-    @Column(name = "link", nullable = false, unique = true)
+    @Column(name = "link", unique = true)
     private String link;
 
     @Column(name = "description")

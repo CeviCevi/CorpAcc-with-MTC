@@ -14,13 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.api.Model.Audio;
 import com.example.api.Model.Transcription;
+import com.example.api.Service.FileService;
 import com.example.api.Service.TranscriptionService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController 
@@ -31,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class TranscriptionController {
 
     private TranscriptionService transcriptionService;
+    private FileService fileService;
 
     @PostMapping 
     public ResponseEntity<?> createTranscription (@Valid @RequestBody Transcription TranscriptionReq){
@@ -52,7 +52,7 @@ public class TranscriptionController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     public ResponseEntity<?> updateTranscription(@RequestBody Transcription transcriptionReq) {
         try {
             Transcription transcription = transcriptionService.updateTranscription(transcriptionReq);
@@ -111,4 +111,27 @@ public class TranscriptionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @PostMapping("/save/{id}")
+    public ResponseEntity<?> saveTranscriptionFile(
+        @PathVariable UUID id,
+        @RequestBody String text) {
+
+        String link = fileService.saveTranscription(text);
+
+        Transcription transcription = transcriptionService.getTranscription(id);
+        transcription.setLink(link);
+        transcription = transcriptionService.updateTranscription(transcription);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(transcription);
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<String> getTranscriptionFile(@PathVariable UUID id) {
+        Transcription transcription = transcriptionService.getTranscription(id);
+        String text = fileService.getTranscription(transcription.getLink());
+
+        return ResponseEntity.ok(text);
+    }
+
 }

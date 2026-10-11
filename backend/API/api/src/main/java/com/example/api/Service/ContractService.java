@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
-
-import com.example.api.Model.Audio;
 import com.example.api.Model.Contract;
-import com.example.api.Model.Transcription;
 import com.example.api.Repository.ContractRepository;
 
 import lombok.AllArgsConstructor;

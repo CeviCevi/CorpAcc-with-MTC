@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.api.Model.CorpStatus;
 import com.example.api.Model.Corporation;
-import com.example.api.Model.UserStatus;
 import com.example.api.Repository.CorporationRepository;
 
 import lombok.AllArgsConstructor;

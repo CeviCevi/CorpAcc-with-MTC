@@ -1,4 +1,8 @@
 spring:
+    servlet:
+        multipart:
+            max-file-size: 500MB
+            max-request-size: 500MB
     datasource:
         url: jdbc:postgresql://localhost:5432/db
         username: postgres
@@ -15,3 +19,8 @@ spring:
                 format_sql: false
     application:
         name: api
+app:
+  storage:
+    root-directory: backend/data/uploads
+
+

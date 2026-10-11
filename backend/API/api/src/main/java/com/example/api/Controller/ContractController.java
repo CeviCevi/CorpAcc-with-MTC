@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.api.Model.Audio;
 import com.example.api.Model.Contract;
-import com.example.api.Model.Transcription;
 import com.example.api.Service.ContractService;
+import com.example.api.Service.FileService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import tools.jackson.databind.JsonNode;
 
 @RestController 
 @RequestMapping ("/api/contracts")
@@ -30,6 +30,7 @@ import lombok.AllArgsConstructor;
 public class ContractController {
 
     private ContractService contractService;
+    private FileService fileService;
 
     @PostMapping 
     public ResponseEntity<?> createContract (@Valid @RequestBody Contract ContractReq){
@@ -110,6 +111,27 @@ public class ContractController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+    }
+
+    @PostMapping("/save/{id}")
+    public ResponseEntity<?> saveContract(@PathVariable UUID id, @RequestBody JsonNode contractFile) {
+
+        String link = fileService.saveContract(contractFile);
+
+        Contract contract = contractService.getContract(id);
+        contract.setLink(link);
+        contract = contractService.updateContract(contract);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(contract);
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<JsonNode> getContractFile(@PathVariable UUID id) {
+        Contract contract = contractService.getContract(id);
+
+        JsonNode contractFile = fileService.getContract(contract.getLink(), JsonNode.class);
+
+        return ResponseEntity.ok(contractFile);
     }
 }
 

@@ -18,7 +18,6 @@ import com.example.api.Service.CorporationService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController 

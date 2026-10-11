@@ -12,7 +12,7 @@ class WebRepository {
       if (response.data is Map<String, dynamic>) {
         return response.data as Map<String, dynamic>;
       }
-      return {"error": "${response.data.runtimeType}"};
+      return _toMap(response.data);
     } on DioException catch (e) {
       return {"error": e.message ?? "Unknown error"};
     } catch (e) {
@@ -31,7 +31,7 @@ class WebRepository {
         data: data,
         queryParameters: query,
       );
-      return {"error": "${response.data.runtimeType}"};
+      return _toMap(response.data);
     } on DioException catch (e) {
       return {"error": e.message ?? "Unknown error"};
     } catch (e) {
@@ -50,7 +50,7 @@ class WebRepository {
         data: data,
         queryParameters: query,
       );
-      return {"error": "${response.data.runtimeType}"};
+      return _toMap(response.data);
     } on DioException catch (e) {
       return {"error": e.message ?? "Unknown error"};
     } catch (e) {
@@ -69,7 +69,7 @@ class WebRepository {
         data: data,
         queryParameters: query,
       );
-      return {"error": "${response.data.runtimeType}"};
+      return _toMap(response.data);
     } on DioException catch (e) {
       return {"error": e.message ?? "Unknown error"};
     } catch (e) {
@@ -88,11 +88,21 @@ class WebRepository {
         data: data,
         queryParameters: query,
       );
-      return {"error": "${response.data.runtimeType}"};
+      return _toMap(response.data);
     } on DioException catch (e) {
       return {"error": e.message ?? "Unknown error"};
     } catch (e) {
       return {"error": e.toString()};
     }
+  }
+
+  static Map<String, dynamic> _toMap(dynamic data) {
+    if (data is Map<String, dynamic>) {
+      return data;
+    }
+    if (data is Map) {
+      return Map<String, dynamic>.from(data);
+    }
+    return {'data': data};
   }
 }

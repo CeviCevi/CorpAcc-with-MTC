@@ -1,78 +1,215 @@
+import 'package:corp_app/app/app_path/app_path.dart';
 import 'package:corp_app/data/model/user_model.dart';
-import 'package:corp_app/domain/service/web_service.dart';
+import 'package:corp_app/domain/repository/storage_repository.dart';
+import 'package:corp_app/domain/repository/web_repository.dart';
 
 class UserService {
-  static WebService _ws = WebService();
+  static final StorageRepository _storage = StorageRepository.instance;
 
-  //! for all
+  static Future<Map<String, dynamic>> _get({required String path}) {
+    return WebRepository.getHttp(path: path);
+  }
+
+  static Future<Map<String, dynamic>> _post({
+    required String path,
+    Map<String, dynamic>? data,
+  }) {
+    return WebRepository.postHttp(path: path, data: data);
+  }
+
+  static Future<Map<String, dynamic>> _put({
+    required String path,
+    Map<String, dynamic>? data,
+  }) {
+    return WebRepository.putHttp(path: path, data: data);
+  }
+
+  static Future<Map<String, dynamic>> _delete({required String path}) {
+    return WebRepository.deleteHttp(path: path);
+  }
+
+  static bool _hasError(Map<String, dynamic> result) {
+    return result.containsKey('error');
+  }
+
+  static UserModel _userFromJson(Map<String, dynamic> json) {
+    return UserModel(
+      id: json['id']?.toString() ?? '',
+      login: json['login']?.toString() ?? '',
+      email: json['email']?.toString() ?? '',
+      password: json['password']?.toString() ?? '',
+      image: json['image']?.toString() ?? '',
+      role: json['role']?.toString() ?? 'moderation',
+      createAt: json['createAt']?.toString() ?? '',
+    );
+  }
+
+  static Future<void> _saveUser(UserModel user) async {
+    await _storage.init();
+    await _storage.upsertUser(user);
+  }
+
+  static Future<void> _removeUser(String id) async {
+    await _storage.init();
+    await _storage.deleteUser(id);
+  }
+
+  // Регистрация
   static Future<bool> registration({
     required String mail,
     required String password,
   }) async {
-    //* http 200
+    final result = await _post(
+      path: AppPath.registration,
+      data: {'mail': mail, 'password': password},
+    );
+
+    if (_hasError(result)) return false;
+
+    if (result['id'] != null) {
+      await _saveUser(_userFromJson(result));
+    }
+
     return true;
   }
 
+  // Вход
   static Future<bool> login({
     required String mail,
     required String password,
   }) async {
-    //* http 200
+    final result = await _post(
+      path: AppPath.login,
+      data: {'mail': mail, 'password': password},
+    );
+
+    if (_hasError(result)) return false;
+
+    if (result['id'] != null) {
+      await _saveUser(_userFromJson(result));
+    }
+
     return true;
   }
 
+  // Удаление своего аккаунта
   static Future<bool> deleteMyAcc({required String userId}) async {
-    //* http 200
+    final result = await _delete(path: '${AppPath.destroyMyAcc}/$userId');
+
+    if (_hasError(result)) return false;
+
+    await _removeUser(userId);
     return true;
   }
 
+  // Обновление пользователя
   static Future<bool> updateMyAcc({required UserModel user}) async {
-    //* http 200
+    final result = await _put(
+      path: AppPath.updateMyAcc,
+      data: {
+        'id': user.id,
+        'login': user.login,
+        'email': user.email,
+        'password': user.password,
+        'image': user.image,
+        'role': user.role,
+        'createAt': user.createAt,
+      },
+    );
+
+    if (_hasError(result)) return false;
+
+    await _saveUser(user);
     return true;
   }
 
+  // Обновление фотографии.
+  // Использует общий endpoint PUT /api/users.
   static Future<bool> updateMyPhoto({
     required String userId,
     required String photo,
   }) async {
-    //* http 200
-    return true;
+    final current = await getUserById(userId: userId);
+
+    if (current.id == UserModel.empty.id) return false;
+
+    final updated = current.copyWith(image: photo);
+    return updateMyAcc(user: updated);
   }
 
+  // Получение пользователя по ID
   static Future<UserModel> getUserById({required String userId}) async {
-    //* User
-    return UserModel.empty;
+    final result = await _get(path: '${AppPath.getUserById}/$userId');
+
+    if (_hasError(result) || result['id'] == null) {
+      await _storage.init();
+      return await _storage.getUserById(userId) ?? UserModel.empty;
+    }
+
+    final user = _userFromJson(result);
+    await _saveUser(user);
+    return user;
   }
 
-  //! for corp
+  // Добавление пользователя в корпорацию
   static Future<bool> setUserInCorpByEmail({
     required String corpId,
     required String userEmail,
   }) async {
-    //* http 200
-    return true;
+    final result = await _post(
+      path: '${AppPath.setUserInCorpByEmail}/$corpId/$userEmail',
+    );
+
+    return !_hasError(result);
   }
 
+  // Получение пользователей корпорации
   static Future<List<UserModel>> getAllUsersInCorp({
     required String corpId,
   }) async {
-    //* UserList
-    return [];
+    final result = await _get(path: '${AppPath.getAllUsersInCorp}/$corpId');
+
+    if (_hasError(result)) return [];
+
+    final rawUsers = result['users'] ?? result['data'];
+
+    if (rawUsers is! List) return [];
+
+    final users = rawUsers
+        .whereType<Map>()
+        .map((item) => _userFromJson(Map<String, dynamic>.from(item)))
+        .toList();
+
+    for (final user in users) {
+      await _saveUser(user);
+    }
+
+    return users;
   }
 
+  // Удаление пользователя из корпорации.
+  // В таблице endpoint указан как /api/users/delete/{id}.
   static Future<bool> deleteUserInCorpById({
     required String corpId,
     required String userId,
   }) async {
-    //* http 200
+    final result = await _delete(
+      path: '${AppPath.deleteUserInCorpById}/$userId',
+    );
+
+    if (_hasError(result)) return false;
+
+    await _removeUser(userId);
     return true;
   }
 
+  // Для блокировки в предоставленной таблице отдельного endpoint нет.
   static Future<bool> banUserById({
     required String userId,
     required String status,
   }) async {
-    //* http 200
-    return true;
+    throw UnimplementedError(
+      'Для блокировки пользователя нужно указать endpoint бэкенда.',
+    );
   }
 }

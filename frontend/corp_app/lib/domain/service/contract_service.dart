@@ -1,9 +1,6 @@
 import 'package:corp_app/data/model/contract_model.dart';
-import 'package:corp_app/domain/service/web_service.dart';
 
 class ContractService {
-  static WebService _ws = WebService();
-
   //! For All
   static Future<ContractModel> getById({required String audioId}) async {
     //* Contract

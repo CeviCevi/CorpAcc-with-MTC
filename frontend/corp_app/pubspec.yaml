@@ -9,7 +9,7 @@ environment:
 dependencies:
   dio: ^5.11.1
   shared_preferences: 
-  path_provider:
+  path_provider: ^2.1.6
   drift:
   window_manager:
   flutter:
@@ -18,6 +18,9 @@ dependencies:
   json_annotation: ^4.12.0
   loading_animation_widget:
   audioplayers:
+  ffmpeg_kit_flutter_new: ^4.6.7
+  record: ^7.1.2
+  path: ^1.9.1
 
 dev_dependencies:
   flutter_test:

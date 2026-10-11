@@ -10,6 +10,7 @@ void main() async {
   await StorageRepository.instance.init();
 
   await windowManager.ensureInitialized();
+  await AppConst.init();
 
   WindowOptions windowOptions = WindowOptions(
     size: Size(AppConst.width, AppConst.height),

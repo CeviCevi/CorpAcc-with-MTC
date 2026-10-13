@@ -1,0 +1,72 @@
+{
+  "audio": "audio.mp3",
+  "date": {
+    "tag": "[date]",
+    "value": ""
+  },
+  "speakers": [
+    {
+      "speaker_id": "SPEAKER_1",
+      "annotations": [
+        {
+          "tag": "[speaker_id]",
+          "value": "SPEAKER_1"
+        },
+        {
+          "tag": "[name]",
+          "value": "SPEAKER_1"
+        },
+        {
+          "tag": "[user]",
+          "value": "SPEAKER_1"
+        },
+        {
+          "tag": "[role]",
+          "value": "Speaker"
+        },
+        {
+          "tag": "[description]",
+          "value": "Speaker"
+        }
+      ]
+    },
+    {
+      "speaker_id": "UNKNOWN",
+      "annotations": [
+        {
+          "tag": "[speaker_id]",
+          "value": "UNKNOWN"
+        }
+      ]
+    }
+  ],
+  "companies": [],
+  "agreements": [],
+  "open_questions": [],
+  "summary": {
+    "tag": "[summary]",
+    "value": "The speaker talks about leaving an old fairground and moving towards the stars, expressing nostalgia for the past and determination to continue."
+  },
+  "tag_vocabulary": {
+    "name": "[name]",
+    "user": "[user]",
+    "role": "[role]",
+    "company_name": "[company_name]",
+    "description": "[description]",
+    "speaker_id": "[speaker_id]",
+    "agreement": "[agreement]",
+    "subject": "[subject]",
+    "from_company": "[from_company]",
+    "to_company": "[to_company]",
+    "from_gives": "[from_gives]",
+    "to_gives": "[to_gives]",
+    "conditions": "[conditions]",
+    "deadline": "[deadline]",
+    "status": "[status]",
+    "evidence_segment_ids": "[evidence_segment_ids]",
+    "date": "[date]",
+    "representative": "[representative]",
+    "open_question": "[open_question]",
+    "summary": "[summary]"
+  }
+}

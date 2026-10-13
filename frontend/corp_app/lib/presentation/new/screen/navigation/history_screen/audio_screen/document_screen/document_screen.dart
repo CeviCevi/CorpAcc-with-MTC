@@ -193,14 +193,14 @@ class DocumentScreen extends StatelessWidget {
       );
     }
 
-    void addRecords(
-      pw.Widget Function(String) sectionTitle,
-      String title,
-      List<Map> records,
-      String fallback,
-    ) {
-      if (records.isEmpty) return;
-    }
+    // void addRecords(
+    //   pw.Widget Function(String) sectionTitle,
+    //   String title,
+    //   List<Map> records,
+    //   String fallback,
+    // ) {
+    //   if (records.isEmpty) return;
+    // }
 
     pdf.addPage(
       pw.MultiPage(

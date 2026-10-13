@@ -1,5 +1,6 @@
 class AppPath {
-  static String apiPath = "https://"; //TODO get address
+  static String apiPath =
+      "https://64wh7x1w-8080.euw.devtunnels.ms"; //TODO get address
 
   // ─── users ───
   static String registration = "$apiPath/api/users/registration";
@@ -7,6 +8,7 @@ class AppPath {
   static String destroyMyAcc = "$apiPath/api/users/destroy";
   static String updateMyAcc = "$apiPath/api/users";
   static String getUserById = "$apiPath/api/users";
+  static String getUserByEmail = "$apiPath/api/users/email";
   static String setUserInCorpByEmail = "$apiPath/api/users/addToCorp";
   static String getAllUsersInCorp = "$apiPath/api/users/allUsers";
   static String deleteUserInCorpById = "$apiPath/api/users/delete";

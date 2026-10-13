@@ -25,12 +25,12 @@ class UserModel {
   }
 
   static const empty = UserModel(
-    id: "NoN",
+    id: "123",
     login: "NoN",
     email: "NoN",
     password: "Non",
     image: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==",
-    role: "NoN",
+    role: "DEFAULT",
     createAt: "1969-07-20T20:18:04.000Z",
   );
 
@@ -46,16 +46,27 @@ class UserModel {
     String? image,
     String? role,
     String? createAt,
-    UserModel? empty,
+    UserModel? model,
   }) {
-    return UserModel(
-      id: id ?? this.id,
-      login: login ?? this.login,
-      email: email ?? this.email,
-      password: password ?? this.password,
-      image: image ?? this.image,
-      role: role ?? this.role,
-      createAt: createAt ?? this.createAt,
-    );
+    return model ??
+        UserModel(
+          id: id ?? this.id,
+          login: login ?? this.login,
+          email: email ?? this.email,
+          password: password ?? this.password,
+          image: image ?? this.image,
+          role: role ?? this.role,
+          createAt: createAt ?? this.createAt,
+        );
   }
+
+  Map<String, dynamic> toJson() => {
+    //'id': id,
+    'name': login,
+    'email': email,
+    'password': password,
+    //'status': role,
+    //'y': image,
+    //'created_at': createAt,
+  };
 }

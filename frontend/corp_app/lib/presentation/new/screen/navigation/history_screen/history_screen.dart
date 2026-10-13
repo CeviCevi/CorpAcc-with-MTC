@@ -30,7 +30,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   Future<void> _load() async {
     final list = await AudioService.getAllByUserId(
-      userId: ShortDb.userInSystem.id,
+      userId: ShortDb.instance.userInSystem.id,
     );
     list.add(AudioModel.empty);
     list.add(AudioModel.empty);

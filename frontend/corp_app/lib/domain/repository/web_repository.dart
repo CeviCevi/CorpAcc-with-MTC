@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 
 class WebRepository {
@@ -14,8 +16,10 @@ class WebRepository {
       }
       return _toMap(response.data);
     } on DioException catch (e) {
+      log(e.toString());
       return {"error": e.message ?? "Unknown error"};
     } catch (e) {
+      log(e.toString());
       return {"error": e.toString()};
     }
   }
@@ -33,8 +37,10 @@ class WebRepository {
       );
       return _toMap(response.data);
     } on DioException catch (e) {
+      log(e.toString());
       return {"error": e.message ?? "Unknown error"};
     } catch (e) {
+      log(e.toString());
       return {"error": e.toString()};
     }
   }
@@ -52,8 +58,10 @@ class WebRepository {
       );
       return _toMap(response.data);
     } on DioException catch (e) {
+      log(e.toString());
       return {"error": e.message ?? "Unknown error"};
     } catch (e) {
+      log(e.toString());
       return {"error": e.toString()};
     }
   }

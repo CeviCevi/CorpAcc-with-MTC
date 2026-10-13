@@ -8,6 +8,7 @@ class AppConst {
 
   static late final String appDataPath;
 
+  static final String userInSystemId = "userInSystemId";
   static Future<void> init() async {
     final dir = await getApplicationDocumentsDirectory();
 

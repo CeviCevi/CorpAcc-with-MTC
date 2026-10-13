@@ -1,5 +1,6 @@
 import 'package:corp_app/app/app_color/app_color.dart';
 import 'package:corp_app/app/app_const.dart';
+import 'package:corp_app/data/short_db/sp.dart';
 import 'package:corp_app/domain/repository/storage_repository.dart';
 import 'package:corp_app/presentation/new/screen/navigation/navigation_screen/navigation_screen.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,8 @@ import 'package:window_manager/window_manager.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await StorageRepository.instance.init();
+
+  await Sp.instance.init();
 
   await windowManager.ensureInitialized();
   await AppConst.init();

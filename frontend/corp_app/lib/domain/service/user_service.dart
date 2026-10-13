@@ -1,5 +1,10 @@
+import 'dart:developer';
+
+import 'package:corp_app/app/app_const.dart';
 import 'package:corp_app/app/app_path/app_path.dart';
 import 'package:corp_app/data/model/user_model.dart';
+import 'package:corp_app/data/short_db/short_db.dart';
+import 'package:corp_app/data/short_db/sp.dart';
 import 'package:corp_app/domain/repository/storage_repository.dart';
 import 'package:corp_app/domain/repository/web_repository.dart';
 
@@ -35,12 +40,12 @@ class UserService {
   static UserModel _userFromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id']?.toString() ?? '',
-      login: json['login']?.toString() ?? '',
+      login: json['name']?.toString() ?? '',
       email: json['email']?.toString() ?? '',
       password: json['password']?.toString() ?? '',
       image: json['image']?.toString() ?? '',
-      role: json['role']?.toString() ?? 'moderation',
-      createAt: json['createAt']?.toString() ?? '',
+      role: json['status']?.toString() ?? 'DEFAULT',
+      createAt: json['createdAt']?.toString() ?? '',
     );
   }
 
@@ -55,40 +60,42 @@ class UserService {
   }
 
   // Регистрация
-  static Future<bool> registration({
-    required String mail,
-    required String password,
-  }) async {
-    final result = await _post(
-      path: AppPath.registration,
-      data: {'mail': mail, 'password': password},
-    );
+  static Future<bool> registration({required UserModel user}) async {
+    final result = await _post(path: AppPath.registration, data: user.toJson());
 
-    if (_hasError(result)) return false;
+    //if (_hasError(result)) return false;
 
     if (result['id'] != null) {
+      ShortDb.instance.userInSystem = _userFromJson(result);
       await _saveUser(_userFromJson(result));
+    } else {
+      return false;
     }
 
+    Sp.instance.prefs.setString(
+      AppConst.userInSystemId,
+      ShortDb.instance.userInSystem.id.toString(),
+    );
     return true;
   }
 
   // Вход
-  static Future<bool> login({
-    required String mail,
-    required String password,
-  }) async {
-    final result = await _post(
-      path: AppPath.login,
-      data: {'mail': mail, 'password': password},
-    );
+  static Future<bool> login({required UserModel user}) async {
+    final result = await _post(path: AppPath.login, data: user.toJson());
 
-    if (_hasError(result)) return false;
+    //if (_hasError(result)) return false;
 
     if (result['id'] != null) {
+      ShortDb.instance.userInSystem = _userFromJson(result);
       await _saveUser(_userFromJson(result));
+    } else {
+      return false;
     }
 
+    Sp.instance.prefs.setString(
+      AppConst.userInSystemId,
+      ShortDb.instance.userInSystem.id.toString(),
+    );
     return true;
   }
 
@@ -108,12 +115,10 @@ class UserService {
       path: AppPath.updateMyAcc,
       data: {
         'id': user.id,
-        'login': user.login,
+        'name': user.login,
         'email': user.email,
         'password': user.password,
-        'image': user.image,
-        'role': user.role,
-        'createAt': user.createAt,
+        'status': user.role,
       },
     );
 
@@ -141,10 +146,13 @@ class UserService {
   static Future<UserModel> getUserById({required String userId}) async {
     final result = await _get(path: '${AppPath.getUserById}/$userId');
 
-    if (_hasError(result) || result['id'] == null) {
-      await _storage.init();
-      return await _storage.getUserById(userId) ?? UserModel.empty;
-    }
+    final user = _userFromJson(result);
+    await _saveUser(user);
+    return user;
+  }
+
+  static Future<UserModel> getUserByEmail({required String email}) async {
+    final result = await _get(path: '${AppPath.getUserByEmail}/$email');
 
     final user = _userFromJson(result);
     await _saveUser(user);
@@ -194,7 +202,7 @@ class UserService {
     required String userId,
   }) async {
     final result = await _delete(
-      path: '${AppPath.deleteUserInCorpById}/$userId',
+      path: '${AppPath.deleteUserInCorpById}/\$$userId',
     );
 
     if (_hasError(result)) return false;
@@ -212,4 +220,53 @@ class UserService {
       'Для блокировки пользователя нужно указать endpoint бэкенда.',
     );
   }
+}
+
+Future<void> main(List<String> args) async {
+  // await UserService.registration(user: UserModel.empty.copyWith(email: "33"));
+  //c7e747cf-89b3-4179-a649-9b3a563afc3d
+  log(
+    (await UserService.login(
+      user: ShortDb.instance.userInSystem.copyWith(
+        login: "NoN",
+        password: "Non",
+        email: "33",
+      ),
+    )).toString(),
+  );
+  log(
+    (await UserService.getUserById(userId: ShortDb.instance.userInSystem.id))
+        .toString(),
+  );
+  log(ShortDb.instance.userInSystem.toString());
+  log(
+    (await StorageRepository.instance.getUserById(
+      ShortDb.instance.userInSystem.id,
+    )).toString(),
+  );
+  // log(
+  //   (await UserService.deleteMyAcc(userId: ShortDb.instance.userInSystem.id))
+  //       .toString(),
+  // );
+
+  log(
+    (await UserService.updateMyAcc(
+      user: ShortDb.instance.userInSystem.copyWith(role: "DEFAULT"),
+    )).toString(),
+  );
+
+  log(
+    (await UserService.setUserInCorpByEmail(
+      corpId: "a9adef01-b147-42cb-aab9-c07c99a529a4",
+      userEmail: "33",
+    )).toString(),
+  );
+
+  log(
+    (await UserService.getAllUsersInCorp(
+      corpId: "a9adef01-b147-42cb-aab9-c07c99a529a4",
+    )).toString(),
+  );
+
+  log((await UserService.getUserByEmail(email: "33")).toString());
 }

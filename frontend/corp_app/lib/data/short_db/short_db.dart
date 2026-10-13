@@ -4,9 +4,12 @@ import 'package:corp_app/data/model/transcription_model.dart';
 import 'package:corp_app/data/model/user_model.dart';
 
 class ShortDb {
-  static UserModel userInSystem = UserModel.empty; //TODO
-  static List<UserModel> userDB = [];
-  static List<ContractModel> contractDB = [];
-  static List<AudioModel> audioDB = [];
-  static List<TranscriptionModel> transcriptionDB = [];
+  ShortDb._();
+  static final ShortDb instance = ShortDb._();
+
+  UserModel userInSystem = UserModel.empty; //TODO
+  List<UserModel> userDB = [];
+  List<ContractModel> contractDB = [];
+  List<AudioModel> audioDB = [];
+  List<TranscriptionModel> transcriptionDB = [];
 }

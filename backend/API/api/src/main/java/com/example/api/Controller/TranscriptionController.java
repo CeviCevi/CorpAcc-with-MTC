@@ -20,8 +20,9 @@ import com.example.api.Service.TranscriptionService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-
+@Slf4j 
 @RestController 
 @RequestMapping ("/api/transcriptions")
 @AllArgsConstructor 
@@ -113,22 +114,26 @@ public class TranscriptionController {
     }
 
     @PostMapping("/save/{id}")
-    public ResponseEntity<?> saveTranscriptionFile(
-        @PathVariable UUID id,
-        @RequestBody String text) {
+    public ResponseEntity<?> saveTranscriptionFile(@PathVariable("id") UUID id, @RequestBody String text) {
+        try {
+            String link = fileService.saveTranscription(text);
+            log.info("transcription file saved: audioId={}, link={}", id, link);
 
-        String link = fileService.saveTranscription(text);
+            Transcription transcription = transcriptionService.getTranscriptionByAudio(id);
+            transcription.setLink(link);
+            transcription = transcriptionService.updateTranscription(transcription);
 
-        Transcription transcription = transcriptionService.getTranscription(id);
-        transcription.setLink(link);
-        transcription = transcriptionService.updateTranscription(transcription);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(transcription);
+            return ResponseEntity.status(HttpStatus.CREATED).body(transcription);
+        } catch (Exception e) {
+            log.error("transcription callback failed: audioId={}", id, e);
+            throw e;
+        }
     }
 
     @GetMapping("/get/{id}")
     public ResponseEntity<String> getTranscriptionFile(@PathVariable UUID id) {
-        Transcription transcription = transcriptionService.getTranscription(id);
+        Transcription transcription = transcriptionService.getTranscriptionByAudio(id);
         String text = fileService.getTranscription(transcription.getLink());
 
         return ResponseEntity.ok(text);

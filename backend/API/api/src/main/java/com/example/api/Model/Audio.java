@@ -17,6 +17,11 @@ import java.util.UUID;
 @Setter
 public class Audio {
 
+    public Audio (User user, String name){
+        this.creator = user;
+        this.name = name;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false, updatable = false)

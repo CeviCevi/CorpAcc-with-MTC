@@ -22,6 +22,8 @@ import com.example.api.Service.UserService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController 
 @RequestMapping ("/api/users")
@@ -33,6 +35,12 @@ public class UserController {
     private UserService userService;
 
     private CorporationService corporationService;
+
+    @GetMapping()
+    public String ok() {
+        return "ok";
+    }
+    
 
     @PostMapping 
     public ResponseEntity<?> createUser (@Valid @RequestBody User UserReq){

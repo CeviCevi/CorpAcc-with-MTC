@@ -47,14 +47,14 @@ public class FileService {
             Files.createDirectories(transcriptionDirectory);
             Files.createDirectories(contractDirectory);
         } catch (IOException e) {
-            throw new IllegalStateException("Не удалось создать папки для файлов", e);
+            throw new IllegalStateException("Error creating directories", e);
         }
     }
 
     public String saveAudio(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Загружаемый файл пустой");
+                    HttpStatus.BAD_REQUEST, "File is empty");
         }
 
         UUID fileId = UUID.randomUUID();
@@ -66,14 +66,14 @@ public class FileService {
         } catch (IOException | IllegalStateException e) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Не удалось сохранить", e);
+                    "Saving failed: ", e);
         }
     }
 
     public Resource getAudio(String link) {
         if (link == null || !link.startsWith(AUDIO_PREFIX)) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Некорректная ссылка на файл");
+                    HttpStatus.BAD_REQUEST, "Bad link");
         }
 
         String fileId = link.substring(AUDIO_PREFIX.length());
@@ -84,24 +84,24 @@ public class FileService {
 
             if (!filePath.startsWith(audioDirectory)) {
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "Некорректный путь к файлу");
+                        HttpStatus.BAD_REQUEST, "Bad path");
             }
 
             Resource resource = new UrlResource(filePath.toUri());
 
             if (!resource.exists() || !resource.isReadable()) {
                 throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Файл не найден");
+                        HttpStatus.NOT_FOUND, "Not found");
             }
 
             return resource;
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Некорректный идентификатор файла", e);
+                    HttpStatus.BAD_REQUEST, "Bad UUID: ", e);
         } catch (MalformedURLException e) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Не удалось прочитать файл", e);
+                    "Error reading file", e);
         }
     }
 
@@ -120,7 +120,7 @@ public class FileService {
         } catch (Exception e) {
             throw new ResponseStatusException(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                "Не удалось преобразовать контракт в JSON", e);
+                "Error converting to JSON: ", e);
         }
     }
 
@@ -132,7 +132,7 @@ public class FileService {
         } catch (Exception e) {
             throw new ResponseStatusException(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                "Не удалось прочитать JSON контракта", e);
+                "Error reading JSON: ", e);
         }
     }
 
@@ -141,7 +141,7 @@ public class FileService {
 
         if (text == null || text.isBlank()) {
             throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "Содержимое файла пустое");
+                HttpStatus.BAD_REQUEST, "File is empty");
         }
 
         UUID fileId = UUID.randomUUID();
@@ -152,7 +152,7 @@ public class FileService {
             return linkPrefix + fileId;
         } catch (IOException e) {
             throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR, "Не удалось сохранить файл", e);
+                    HttpStatus.INTERNAL_SERVER_ERROR, "Saving failed: ", e);
         }
     }
 
@@ -164,33 +164,33 @@ public class FileService {
 
         if (!filePath.startsWith(directory.normalize())) {
             throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "Некорректный путь к файлу");
+                HttpStatus.BAD_REQUEST, "Bad path");
         }   
 
         try {
             if (!Files.isRegularFile(filePath) || !Files.isReadable(filePath)) {
                 throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Файл не найден");
+                    HttpStatus.NOT_FOUND, "Not found");
             }
 
             return Files.readString(filePath, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new ResponseStatusException(
-                HttpStatus.INTERNAL_SERVER_ERROR, "Не удалось прочитать файл", e);
+                HttpStatus.INTERNAL_SERVER_ERROR, "Error reading file: ", e);
         }
     }   
 
     private UUID parseId(String link, String linkPrefix) {
         if (link == null || !link.startsWith(linkPrefix)) {
             throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "Некорректная ссылка на файл");
+                HttpStatus.BAD_REQUEST, "Bad link");
         }
 
         try {
             return UUID.fromString(link.substring(linkPrefix.length()));
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "Некорректный идентификатор файла", e);
+                HttpStatus.BAD_REQUEST, "Bad UUID: ", e);
         }
     }
 }

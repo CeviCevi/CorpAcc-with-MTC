@@ -14,7 +14,7 @@ import com.example.api.Model.Contract;
 public interface ContractRepository extends JpaRepository<Contract, UUID>{
 
     @Query(value = "SELECT * FROM contract WHERE audio_id = :audio_id", nativeQuery = true)
-    Contract findByAudio(@Param("corp_id") UUID audio_id);
+    Contract findByAudio(@Param("audio_id") UUID audio_id);
 
     @Query(value = "SELECT * FROM contract WHERE creator_id = :creator_id", nativeQuery = true)
     List<Contract> findByUser(@Param("creator_id") UUID creator_id);

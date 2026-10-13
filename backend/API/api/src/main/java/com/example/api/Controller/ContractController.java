@@ -118,7 +118,7 @@ public class ContractController {
 
         String link = fileService.saveContract(contractFile);
 
-        Contract contract = contractService.getContract(id);
+        Contract contract = contractService.getContractByAudio(id);
         contract.setLink(link);
         contract = contractService.updateContract(contract);
 
@@ -127,7 +127,7 @@ public class ContractController {
 
     @GetMapping("/get/{id}")
     public ResponseEntity<JsonNode> getContractFile(@PathVariable UUID id) {
-        Contract contract = contractService.getContract(id);
+        Contract contract = contractService.getContractByAudio(id);
 
         JsonNode contractFile = fileService.getContract(contract.getLink(), JsonNode.class);
 

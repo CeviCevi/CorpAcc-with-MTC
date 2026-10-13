@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity 
-@Table (name = "audio")
+@Table (name = "corporation")
 @AllArgsConstructor 
 @NoArgsConstructor 
 @Getter 

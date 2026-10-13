@@ -19,21 +19,34 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.api.Model.Audio;
+import com.example.api.Model.Contract;
+import com.example.api.Model.Transcription;
+import com.example.api.Model.User;
 import com.example.api.Service.AudioService;
+import com.example.api.Service.ContractService;
 import com.example.api.Service.FileService;
+import com.example.api.Service.TranscriptionService;
+import com.example.api.Service.UserService;
+import com.example.api.Service.WebSocketHandler;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.web.bind.annotation.RequestParam;
 
-
+@Slf4j 
 @RestController 
 @RequestMapping ("/api/audios")
 @AllArgsConstructor
 public class AudioController {
 
     private AudioService audioService;
+    private UserService userService;
+    private TranscriptionService transcriptionService;
+    private ContractService contractService;
     private FileService fileService;
+    private WebSocketHandler webSocketHandler;
 
     @PostMapping 
     public ResponseEntity<?> createAudio (@Valid @RequestBody Audio AudioReq){
@@ -98,16 +111,25 @@ public class AudioController {
     }
 
     @PostMapping(value = "/save/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> saveFile(@PathVariable("id") UUID id, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> saveFile(@PathVariable("id") UUID id,@RequestParam("file") MultipartFile file) {
         try {
+            User user = userService.getUser(id);
+            Audio audio = audioService.createAudio(new Audio(user, "name"));
+
             String link = fileService.saveAudio(file);
-            Audio audio = audioService.getAudio(id);
             audio.setLink(link);
             audio = audioService.updateAudio(audio);
+
+            transcriptionService.createTranscription(new Transcription(user, audio, "name"));
+            contractService.createContract(new Contract(user, audio, "name"));
+
+            webSocketHandler.sendUuid(audio.getId());
+            log.info("websocket task sent: audioId={}, elapsedMs={}",audio.getId());
+
             return ResponseEntity.status(HttpStatus.CREATED).body(audio);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(e.getMessage());
+            log.error("audio upload failed: creatorId={}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
@@ -125,5 +147,16 @@ public class AudioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @GetMapping("/retry/{id}")
+    public ResponseEntity<?> getMethodName(@PathVariable UUID id) {
+        try {
+            webSocketHandler.sendUuid(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+    
     
 }

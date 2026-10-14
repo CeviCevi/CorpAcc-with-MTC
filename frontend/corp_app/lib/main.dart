@@ -2,7 +2,7 @@ import 'package:corp_app/app/app_color/app_color.dart';
 import 'package:corp_app/app/app_const.dart';
 import 'package:corp_app/data/short_db/sp.dart';
 import 'package:corp_app/domain/repository/storage_repository.dart';
-import 'package:corp_app/presentation/new/screen/navigation/navigation_screen/navigation_screen.dart';
+import 'package:corp_app/presentation/new/screen/login/reg_screen/reg_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -44,7 +44,7 @@ class MainApp extends StatelessWidget {
           brightness: .dark,
         ),
       )..copyWith(scaffoldBackgroundColor: AppColor.darkGrey),
-      home: NavigationScreen(),
+      home: RegScreen(),
     );
   }
 }

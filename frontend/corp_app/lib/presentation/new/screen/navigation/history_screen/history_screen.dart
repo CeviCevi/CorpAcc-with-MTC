@@ -21,6 +21,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   List<AudioModel> _audios = [];
   String _query = '';
+  bool load = false;
 
   List<AudioModel> get _filtered {
     if (_query.trim().isEmpty) return _audios;
@@ -29,11 +30,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   Future<void> _load() async {
+    setState(() => load = true);
     final list = await AudioService.getAllByUserId(
       userId: ShortDb.instance.userInSystem.id,
     );
-    list.add(AudioModel.empty);
-    list.add(AudioModel.empty);
+    setState(() => load = false);
     if (!mounted) return;
     setState(() => _audios = list);
   }
@@ -99,7 +100,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
           // лист вью
           Expanded(
-            child: _audios.isEmpty
+            child: load
                 ? Center(
                     child: LoadingAnimationWidget.staggeredDotsWave(
                       color: AppColor.green,

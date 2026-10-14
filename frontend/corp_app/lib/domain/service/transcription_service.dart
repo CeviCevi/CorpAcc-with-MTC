@@ -73,10 +73,10 @@ class TranscriptionService {
   }
 
   //! Скачать содержимое — возвращает обычную строку
-  static Future<String> download({required TranscriptionModel audio}) async {
+  static Future<String> download({required String audioId}) async {
     try {
       final response = await _dio.get(
-        '${AppPath.transcriptionDownload}/${audio.id}',
+        '${AppPath.transcriptionDownload}/$audioId',
         options: Options(responseType: ResponseType.plain),
       );
 

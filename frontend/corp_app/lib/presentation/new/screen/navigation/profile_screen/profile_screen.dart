@@ -2,8 +2,12 @@
 import 'package:corp_app/app/app_color/app_color.dart';
 import 'package:corp_app/app/app_const.dart';
 import 'package:corp_app/app/data_service.dart';
+import 'package:corp_app/app/router_service.dart';
 import 'package:corp_app/data/model/user_model.dart';
+import 'package:corp_app/data/short_db/short_db.dart';
+import 'package:corp_app/domain/repository/storage_repository.dart';
 import 'package:corp_app/presentation/new/screen/navigation/profile_screen/edit_profile_screen.dart';
+import 'package:corp_app/presentation/old/screen/auth_screens/login_screen/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -16,6 +20,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  static final StorageRepository _storage = StorageRepository.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     color: AppColor.darkGrey,
                     image: DecorationImage(
                       fit: .cover,
-                      image: NetworkImage(widget.user.image),
+                      image: NetworkImage(ShortDb.instance.userInSystem.image),
                     ),
                   ),
                 ),
@@ -52,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     SizedBox(height: 10),
                     Text(
-                      widget.user.login,
+                      ShortDb.instance.userInSystem.login,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: .w500,
@@ -61,7 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      "id: ${widget.user.id}",
+                      "почта: ${ShortDb.instance.userInSystem.email}",
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: .w500,
@@ -75,20 +81,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
 
           SizedBox(height: 15),
-          ProfileBox(label: widget.user.email, boxName: "почта"),
+          ProfileBox(label: ShortDb.instance.userInSystem.id, boxName: "id"),
           SizedBox(height: 10),
           Row(
             children: [
               Expanded(
                 child: ProfileBox(
-                  label: DateService.dateParser(widget.user.createAt),
+                  label: DateService.dateParser(
+                    ShortDb.instance.userInSystem.createAt,
+                  ),
                   boxName: "дата создания",
                   margin: const .only(left: 16, right: 5),
                 ),
               ),
               Expanded(
                 child: ProfileBox(
-                  label: widget.user.role,
+                  label: ShortDb.instance.userInSystem.role,
                   boxName: "роль",
                   margin: const .only(right: 16, left: 5),
                 ),
@@ -109,20 +117,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     final updated = await Navigator.push<UserModel>(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => EditProfileScreen(user: widget.user),
+                        builder: (_) => EditProfileScreen(
+                          user: ShortDb.instance.userInSystem,
+                        ),
                       ),
                     );
                     if (updated != null) {
                       setState(() {
-                        //widget.user = updated;
+                        ShortDb.instance.userInSystem = updated;
                       });
-                      // TODO: DatabaseService.instance.upsertUser(updated)
-                      // TODO: UserService.updateMyAcc(user: updated)
+                      await _storage.init();
+                      await _storage.upsertUser(updated);
                     }
                   },
                 ),
               ),
-              Expanded(child: ProfileButton(label: "Выйти")),
+              Expanded(
+                child: ProfileButton(
+                  label: "Выйти",
+                  onTap: () {
+                    ShortDb.instance.userInSystem = UserModel.empty;
+                    RouterService.pushpop(context, LoginScreen());
+                  },
+                ),
+              ),
               SizedBox(width: 6),
             ],
           ),

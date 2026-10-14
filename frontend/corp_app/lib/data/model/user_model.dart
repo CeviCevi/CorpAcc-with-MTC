@@ -25,13 +25,13 @@ class UserModel {
   }
 
   static const empty = UserModel(
-    id: "123",
-    login: "NoN",
-    email: "NoN",
-    password: "Non",
-    image: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==",
+    id: "",
+    login: "",
+    email: "",
+    password: "",
+    image: "",
     role: "DEFAULT",
-    createAt: "1969-07-20T20:18:04.000Z",
+    createAt: "",
   );
 
   void print() {

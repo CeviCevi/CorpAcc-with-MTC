@@ -98,21 +98,25 @@ class ContractService {
   //! Получить содержимое контракта из интернета.
   //! Возвращает Map и ничего не сохраняет локально.
   static Future<Map<String, dynamic>> download({
-    required ContractModel contract,
+    required String audioId,
   }) async {
-    final response = await _dio.get<dynamic>(
-      '${AppPath.contractDownload}/${contract.id}',
-      options: Options(responseType: ResponseType.json),
-    );
+    try {
+      final response = await _dio.get<dynamic>(
+        '${AppPath.contractDownload}/$audioId',
+        options: Options(responseType: ResponseType.json),
+      );
 
-    dynamic data = response.data;
+      dynamic data = response.data;
 
-    // Если сервер вернул JSON строкой.
-    if (data is String) {
-      data = jsonDecode(data);
+      // Если сервер вернул JSON строкой.
+      if (data is String) {
+        data = jsonDecode(data);
+      }
+
+      return _toMap(data);
+    } catch (e) {
+      return {};
     }
-
-    return _toMap(data);
   }
 
   //! Отправить JSON-файл контракта на сервер.

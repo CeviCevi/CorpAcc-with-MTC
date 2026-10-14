@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:corp_app/app/app_color/app_color.dart';
 import 'package:corp_app/app/app_const.dart';
 import 'package:corp_app/combined_recorder.dart';
+import 'package:corp_app/data/model/audio_model.dart';
+import 'package:corp_app/data/short_db/short_db.dart';
+import 'package:corp_app/domain/service/audio_service.dart';
 import 'package:corp_app/presentation/new/widget/record_button.dart';
 import 'package:corp_app/presentation/old/widget/custom_text_field/custom_text_field.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +21,8 @@ class _MainScreenState extends State<MainScreen> {
   final CombinedRecorder _recorder = CombinedRecorder();
 
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _discriptionController = TextEditingController();
+
+  final TextEditingController _descriptionController = TextEditingController();
 
   bool _isRecording = false;
   bool _isBusy = false;
@@ -39,9 +43,11 @@ class _MainScreenState extends State<MainScreen> {
 
   void _startTimer() {
     _timer?.cancel();
-
     _elapsedSeconds = 0;
-    _recordingTime = '00:00';
+
+    setState(() {
+      _recordingTime = '00:00';
+    });
 
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!mounted || !_isRecording) return;
@@ -73,6 +79,13 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> _startRecording() async {
+    final name = _nameController.text.trim();
+
+    if (name.isEmpty) {
+      _showMessage('Введите название записи');
+      return;
+    }
+
     setState(() {
       _isBusy = true;
       _errorMessage = null;
@@ -80,12 +93,6 @@ class _MainScreenState extends State<MainScreen> {
     });
 
     try {
-      final name = _nameController.text.trim();
-
-      if (name.isEmpty) {
-        throw Exception('Введите название записи');
-      }
-
       await _recorder.start(name: name);
 
       if (!mounted) {
@@ -131,18 +138,25 @@ class _MainScreenState extends State<MainScreen> {
       setState(() {
         _isRecording = false;
         _recordingPath = path;
-        _nameController.text = "запись_${DateTime.now().hashCode}";
       });
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Запись успешно сохранена')));
+      await _createAudio(path);
+
+      if (!mounted) return;
+
+      _showMessage('Аудио успешно отправлено на сервер');
+
+      setState(() {
+        _nameController.text =
+            'запись_${DateTime.now().millisecondsSinceEpoch}';
+        _descriptionController.clear();
+      });
     } catch (e) {
       if (!mounted) return;
 
       setState(() {
         _isRecording = _recorder.isRecording;
-        _errorMessage = 'Не удалось сохранить запись:\n$e';
+        _errorMessage = 'Не удалось сохранить или отправить аудио:\n$e';
       });
     } finally {
       if (mounted) {
@@ -153,12 +167,35 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  Future<void> _createAudio(String path) async {
+    // Загрузка самого файла по полученному ID.
+    AudioModel audio = await AudioService.upload(
+      audio: AudioModel.empty.copyWith(link: path),
+    );
+
+    final audioMeta = AudioModel(
+      id: audio.id,
+      name: _nameController.text.trim(),
+      creatorId: ShortDb.instance.userInSystem.id,
+      link: path,
+      createAt: DateTime.now().toUtc().toIso8601String(),
+      description: _descriptionController.text.trim(),
+    );
+
+    await AudioService.updateMeta(audio: audioMeta);
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   void dispose() {
     _stopTimer();
     _recorder.dispose();
     _nameController.dispose();
-    _discriptionController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
@@ -186,12 +223,15 @@ class _MainScreenState extends State<MainScreen> {
 
                     if (_isBusy) ...[
                       const SizedBox(height: 16),
-                      const LinearProgressIndicator(),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 18),
+                        child: LinearProgressIndicator(),
+                      ),
                       const SizedBox(height: 8),
                       Text(
                         _isRecording
-                            ? 'Сохранение и сведение аудио...'
-                            : 'Подготовка аудиозаписи...',
+                            ? 'Выполняется операция...'
+                            : 'Сохранение и отправка аудио...',
                         style: TextStyle(
                           color: AppColor.white.withAlpha(180),
                           fontSize: 13,
@@ -214,7 +254,7 @@ class _MainScreenState extends State<MainScreen> {
                             ),
                           ),
                           child: SelectableText(
-                            "Неопознанная ошибка",
+                            _errorMessage!,
                             style: const TextStyle(
                               color: Colors.redAccent,
                               fontSize: 13,
@@ -242,59 +282,12 @@ class _MainScreenState extends State<MainScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 18),
                       child: CustomTextField(
                         maxLines: 3,
-                        controller: _discriptionController,
+                        controller: _descriptionController,
                         hint: 'Встреча для обсуждения закупок новых деталей',
                         label: 'Описание',
                         focusedBorderColor: AppColor.green,
                       ),
                     ),
-
-                    // if (_recordingPath != null) ...[
-                    //   const SizedBox(height: 24),
-                    //   Padding(
-                    //     padding: const EdgeInsets.symmetric(horizontal: 18),
-                    //     child: Container(
-                    //       width: double.infinity,
-                    //       padding: const EdgeInsets.all(14),
-                    //       decoration: BoxDecoration(
-                    //         color: AppColor.surface,
-                    //         borderRadius: BorderRadius.circular(12),
-                    //       ),
-                    //       child: Column(
-                    //         crossAxisAlignment: CrossAxisAlignment.start,
-                    //         children: [
-                    //           const Row(
-                    //             children: [
-                    //               Icon(
-                    //                 Icons.check_circle_outline,
-                    //                 color: Colors.green,
-                    //               ),
-                    //               SizedBox(width: 8),
-                    //               Expanded(
-                    //                 child: Text(
-                    //                   'Запись готова',
-                    //                   style: TextStyle(
-                    //                     fontWeight: FontWeight.w600,
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //             ],
-                    //           ),
-                    //           const SizedBox(height: 8),
-                    //           SelectableText(
-                    //             _recordingPath!,
-                    //             style: const TextStyle(fontSize: 12),
-                    //           ),
-                    //           const SizedBox(height: 8),
-                    //           Text(
-                    //             'Длительность: $_recordingTime',
-                    //             style: const TextStyle(fontSize: 12),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ],
                   ],
                 ),
               ),

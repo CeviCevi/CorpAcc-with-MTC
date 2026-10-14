@@ -6,6 +6,9 @@ import 'package:corp_app/app/app_color/app_color.dart';
 import 'package:corp_app/app/data_service.dart';
 import 'package:corp_app/app/router_service.dart';
 import 'package:corp_app/data/model/audio_model.dart';
+import 'package:corp_app/domain/service/audio_service.dart';
+import 'package:corp_app/domain/service/contract_service.dart';
+import 'package:corp_app/domain/service/transcription_service.dart';
 import 'package:corp_app/presentation/new/screen/navigation/history_screen/audio_screen/document_screen/document_screen.dart';
 import 'package:corp_app/presentation/new/screen/navigation/history_screen/audio_screen/transcription_screen/transcription_screen.dart';
 import 'package:flutter/material.dart';
@@ -25,12 +28,69 @@ class _AudioScreenState extends State<AudioScreen> {
   Key _playerKey = UniqueKey();
   // колбэк от LocalAudioPlayer — сообщает, есть ли файл
   bool? _fileExists;
+  String? _localPath;
+  bool _isDownloading = false;
+
+  Future<void> _checkLocalFile() async {
+    final path = await AudioService.getLocalFilePath(
+      userId: widget.audio.creatorId,
+      audioId: widget.audio.id,
+    );
+
+    final exists = await File(path).exists();
+
+    if (!mounted) return;
+
+    setState(() {
+      _localPath = exists ? path : null;
+    });
+  }
 
   void _reloadPlayer() {
     setState(() {
       _playerKey = UniqueKey();
       _fileExists = null;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLocalFile();
+  }
+
+  Future<void> _downloadAudio() async {
+    if (_isDownloading) return;
+
+    setState(() {
+      _isDownloading = true;
+    });
+
+    try {
+      final path = await AudioService.downloadFile(audio: widget.audio);
+
+      if (!mounted) return;
+
+      setState(() {
+        _localPath = path;
+      });
+
+      _reloadPlayer();
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Аудио успешно скачано')));
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Ошибка скачивания: $e')));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDownloading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -42,11 +102,10 @@ class _AudioScreenState extends State<AudioScreen> {
         children: [
           FloatingMiniButton(icon: Icons.replay_rounded, onTap: _reloadPlayer),
           FloatingMiniButton(
-            icon: Icons.download_rounded,
-            onTap: () {
-              // TODO: скачать файл по widget.audio.link
-              // после скачивания — _reloadPlayer();
-            },
+            icon: _isDownloading
+                ? Icons.hourglass_top_rounded
+                : Icons.download_rounded,
+            onTap: _downloadAudio,
           ),
         ],
       ),
@@ -75,9 +134,10 @@ class _AudioScreenState extends State<AudioScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: LocalAudioPlayer(
                 key: _playerKey,
-                path: widget.audio.link,
+                path: _localPath ?? '',
                 onFileStatus: (exists) {
                   if (!mounted) return;
+
                   if (_fileExists != exists) {
                     setState(() => _fileExists = exists);
                   }
@@ -93,88 +153,27 @@ class _AudioScreenState extends State<AudioScreen> {
                 Expanded(
                   child: AudioButton(
                     label: "Расшифровка",
-                    onTap: () => RouterService.push(
-                      context,
-                      TranscriptionScreen(
-                        transcription:
-                            """[00:00.98 - 00:03.56] Роман Алексеев: Аудио 7.4
-[00:03.56 - 00:07.40] SPEAKER_2: Здравствуйте! Проходите, пожалуйста.
-[00:08.54 - 00:14.60] Роман Алексеев: Добрый день! Позвольте представиться. Меня зовут Роман Алексеев.
-[00:15.44 - 00:17.22] SPEAKER_2: Какая у вас специальность?
-[00:17.82 - 00:19.26] Роман Алексеев: Я экономист.
-[00:19.76 - 00:24.58] SPEAKER_2: Какое у вас образование? Какое учебное заведение вы окончили?
-[00:24.58 - 00:31.66] Роман Алексеев: В 2004 году я окончил факультет экономики Московского государственного университета.
-[00:32.54 - 00:33.88] SPEAKER_2: Где вы работаете?
-[00:34.74 - 00:39.46] Роман Алексеев: Я работаю в сфере информационных технологий в международной компании.
-[00:40.84 - 00:42.94] SPEAKER_2: Вы говорите по -немецки?
-[00:44.38 - 00:48.70] Роман Алексеев: Я плохо говорю по -немецки, но хорошо владею английским языком.
-[00:50.96 - 00:57.68] SPEAKER_2: Должность, на которую вы претендуете, связана с частыми командировками. Вас это устраивает?
-[00:59.30 - 01:01.80] Роман Алексеев: Сколько обычно длится командировка?
-[01:02.28 - 01:04.28] SPEAKER_2: Обычно это 2 -3 дня.
-[01:04.92 - 01:06.88] Роман Алексеев: Как часто нужно ездить в командировки?
-[01:07.56 - 01:08.86] SPEAKER_2: Два раза в месяц.
-[01:09.64 - 01:13.86] Роман Алексеев: В таком случае, полагаю, меня эта работа устраивает.""",
-                      ),
-                    ),
+                    onTap: () async {
+                      final doc = await TranscriptionService.download(
+                        audioId: widget.audio.id,
+                      );
+                      RouterService.push(
+                        context,
+                        TranscriptionScreen(transcription: doc),
+                      );
+                    },
                   ),
                 ),
                 Expanded(
                   child: AudioButton(
                     label: "Документ",
-                    onTap: () => RouterService.push(
-                      context,
-                      DocumentScreen(
-                        data: {
-                          "audio": "test_9.mp3",
-                          "date": {"tag": "[date]", "value": ""},
-                          "speakers": [
-                            {
-                              "speaker_id": "SPEAKER_1",
-                              "annotations": [
-                                {"tag": "[speaker_id]", "value": "SPEAKER_1"},
-                                {"tag": "[name]", "value": "Роман Алексеев"},
-                                {"tag": "[user]", "value": "Роман Алексеев"},
-                              ],
-                            },
-                            {
-                              "speaker_id": "SPEAKER_2",
-                              "annotations": [
-                                {"tag": "[speaker_id]", "value": "SPEAKER_2"},
-                              ],
-                            },
-                          ],
-                          "companies": [],
-                          "agreements": [],
-                          "open_questions": [],
-                          "summary": {
-                            "tag": "[summary]",
-                            "value": "Роман Алексеев рассказывает о своей профессии, образовании и опыте работы в сфере информационных технологий. Он также обсуждает условия работы, включая частоту командировок.",
-                          },
-                          "tag_vocabulary": {
-                            "name": "[name]",
-                            "user": "[user]",
-                            "role": "[role]",
-                            "company_name": "[company_name]",
-                            "description": "[description]",
-                            "speaker_id": "[speaker_id]",
-                            "agreement": "[agreement]",
-                            "subject": "[subject]",
-                            "from_company": "[from_company]",
-                            "to_company": "[to_company]",
-                            "from_gives": "[from_gives]",
-                            "to_gives": "[to_gives]",
-                            "conditions": "[conditions]",
-                            "deadline": "[deadline]",
-                            "status": "[status]",
-                            "evidence_segment_ids": "[evidence_segment_ids]",
-                            "date": "[date]",
-                            "representative": "[representative]",
-                            "open_question": "[open_question]",
-                            "summary": "[summary]",
-                          },
-                        },
-                      ),
-                    ),
+                    onTap: () async {
+                      final doc = await ContractService.download(
+                        audioId: widget.audio.id,
+                      );
+                      // ignore: use_build_context_synchronously
+                      RouterService.push(context, DocumentScreen(data: doc));
+                    },
                   ),
                 ),
                 SizedBox(width: 6),

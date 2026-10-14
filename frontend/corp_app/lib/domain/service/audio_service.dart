@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:corp_app/app/app_path/app_path.dart';
 import 'package:corp_app/data/model/audio_model.dart';
+import 'package:corp_app/data/short_db/short_db.dart';
 import 'package:corp_app/data/storage/database/database.dart';
 import 'package:corp_app/domain/repository/storage_repository.dart';
 import 'package:corp_app/domain/repository/web_repository.dart';
@@ -162,6 +163,30 @@ class AudioService {
     return audio;
   }
 
+  static Future<String> downloadFile({required AudioModel audio}) async {
+    final savePath = await getLocalFilePath(
+      userId: audio.creatorId,
+      audioId: audio.id,
+    );
+
+    final file = File(savePath);
+    await file.parent.create(recursive: true);
+
+    await _dio.download(
+      '${AppPath.audioDownload}/${audio.id}',
+      savePath,
+      options: Options(responseType: ResponseType.bytes),
+    );
+
+    if (!await file.exists() || await file.length() == 0) {
+      throw FileSystemException('Не удалось скачать аудиофайл', savePath);
+    }
+
+    await _saveLocal(audio);
+
+    return savePath;
+  }
+
   /// Отправляет файл на сервер.
   /// audio.link должен содержать путь к существующему локальному файлу.
   static Future<AudioModel> upload({required AudioModel audio}) async {
@@ -178,7 +203,7 @@ class AudioService {
     });
 
     final response = await _dio.post(
-      '${AppPath.audioUpload}/${audio.id}',
+      '${AppPath.audioUpload}/${ShortDb.instance.userInSystem.id}',
       data: form,
     );
 
@@ -237,5 +262,18 @@ class AudioService {
     }
 
     return audios;
+  }
+
+  static Future<AudioModel> createAudio({required AudioModel audio}) async {
+    final response = await WebRepository.postHttp(
+      path: AppPath.createAudio,
+      data: audio.toJson(),
+    );
+
+    if (response.containsKey('error')) {
+      throw Exception(response['error']);
+    }
+
+    return AudioModel.fromJson(response);
   }
 }

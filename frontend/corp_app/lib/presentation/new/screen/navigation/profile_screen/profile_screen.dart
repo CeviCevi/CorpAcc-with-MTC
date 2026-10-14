@@ -6,8 +6,8 @@ import 'package:corp_app/app/router_service.dart';
 import 'package:corp_app/data/model/user_model.dart';
 import 'package:corp_app/data/short_db/short_db.dart';
 import 'package:corp_app/domain/repository/storage_repository.dart';
+import 'package:corp_app/presentation/new/screen/login/login_screen/login_screen.dart';
 import 'package:corp_app/presentation/new/screen/navigation/profile_screen/edit_profile_screen.dart';
-import 'package:corp_app/presentation/old/screen/auth_screens/login_screen/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatefulWidget {

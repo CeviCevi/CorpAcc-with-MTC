@@ -3,10 +3,14 @@ import 'dart:ui';
 import 'package:corp_app/app/app_color/app_color.dart';
 import 'package:corp_app/app/app_const.dart';
 import 'package:corp_app/data/model/user_model.dart';
+import 'package:corp_app/data/short_db/short_db.dart';
 import 'package:corp_app/presentation/new/screen/navigation/history_screen/history_screen.dart';
 import 'package:corp_app/presentation/new/screen/navigation/main_screen/main_screen.dart';
 import 'package:corp_app/presentation/new/screen/navigation/profile_screen/profile_screen.dart';
+import 'package:corp_app/presentation/new/screen/navigation/work_screen/work_screen.dart';
 import 'package:flutter/material.dart';
+
+import 'nav_item.dart';
 
 class NavigationScreen extends StatefulWidget {
   const NavigationScreen({super.key});
@@ -20,6 +24,8 @@ class NavigationScreenState extends State<NavigationScreen> {
     MainScreen(),
     HistoryScreen(),
     ProfileScreen(user: UserModel.empty),
+    if (ShortDb.instance.userInSystem.role == "CORP")
+      WorkScreen(corpId: ShortDb.instance.userInSystem.id),
   ];
 
   bool isActive = false;
@@ -49,7 +55,7 @@ class NavigationScreenState extends State<NavigationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SizedBox(
-        height: AppConst.height,
+        height: AppConst.height / .4,
         width: AppConst.width,
         child: Stack(
           children: [
@@ -198,6 +204,12 @@ class NavigationScreenState extends State<NavigationScreen> {
                                 onTap: () => _rewriteAndClose(2),
                                 isActive: _checkScreen(2),
                               ),
+                              if (ShortDb.instance.userInSystem.role == "CORP")
+                                NavItem(
+                                  label: 'Работники',
+                                  onTap: () => _rewriteAndClose(3),
+                                  isActive: _checkScreen(3),
+                                ),
                             ],
                           ),
                         ],
@@ -227,75 +239,6 @@ class NavigationScreenState extends State<NavigationScreen> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class NavItem extends StatelessWidget {
-  const NavItem({
-    super.key,
-    required this.label,
-    required this.onTap,
-    required this.isActive,
-  });
-
-  final String label;
-  final VoidCallback? onTap;
-  final bool isActive;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOut,
-        decoration: BoxDecoration(
-          color: AppColor.surface.withAlpha(100),
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(14),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              child: Row(
-                children: [
-                  // полоска-индикатор слева
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 50),
-                    width: 3,
-                    height: isActive ? 20 : 0,
-                    margin: const EdgeInsets.only(right: 10),
-                    decoration: BoxDecoration(
-                      color: AppColor.accent,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      label,
-                      style: TextStyle(
-                        color: AppColor.textPrimary,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Icon(
-                    Icons.chevron_right_rounded,
-                    color: AppColor.textMuted,
-                    size: 20,
-                  ),
-                ],
-              ),
-            ),
-          ),
         ),
       ),
     );

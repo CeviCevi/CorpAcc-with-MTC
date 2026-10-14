@@ -125,6 +125,7 @@ class UserService {
     if (_hasError(result)) return false;
 
     await _saveUser(user);
+    ShortDb.instance.userInSystem = user;
     return true;
   }
 

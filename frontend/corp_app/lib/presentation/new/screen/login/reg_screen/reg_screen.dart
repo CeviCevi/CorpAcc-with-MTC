@@ -1,9 +1,10 @@
 import 'package:corp_app/app/app_color/app_color.dart';
 import 'package:corp_app/app/router_service.dart';
 import 'package:corp_app/data/model/user_model.dart';
+import 'package:corp_app/data/short_db/short_db.dart';
 import 'package:corp_app/domain/service/user_service.dart';
 import 'package:corp_app/presentation/new/screen/login/login_screen/login_screen.dart';
-import 'package:corp_app/presentation/new/screen/navigation/navigation_screen/navigation_screen.dart';
+import 'package:corp_app/presentation/new/screen/login/reg_screen/status_screen.dart';
 import 'package:corp_app/presentation/old/widget/custom_text_field/custom_text_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -109,7 +110,10 @@ class RegScreenState extends State<RegScreen> {
       if (!mounted) return;
 
       if (success) {
-        RouterService.pushpop(context, NavigationScreen());
+        RouterService.pushpop(
+          context,
+          StatusScreen(user: ShortDb.instance.userInSystem),
+        );
       } else {
         _showMessage('Не удалось зарегистрироваться. Проверьте данные.');
       }

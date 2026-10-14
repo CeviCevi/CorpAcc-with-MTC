@@ -40,6 +40,16 @@ public class UserController {
     public String ok() {
         return "ok";
     }
+    @GetMapping("/email/{mail}")
+    public ResponseEntity<?> getUserByEmail(@PathVariable String mail) {
+        try {
+            User  user = userService.getUserByEmail(mail);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            System.out.println("UserController: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
     
 
     @PostMapping 
@@ -48,6 +58,7 @@ public class UserController {
             User  user = userService.createUser(UserReq);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
+            System.out.println("UserController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -58,6 +69,7 @@ public class UserController {
             userService.destroyUser(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            System.out.println("UserController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -68,6 +80,7 @@ public class UserController {
             User user = userService.deleteUser(id);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
+            System.out.println("UserController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage()); 
         }
     }
@@ -78,6 +91,7 @@ public class UserController {
             User user = userService.updateUser(userReq);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
+            System.out.println("UserController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -88,6 +102,7 @@ public class UserController {
             User user = userService.getUser(id);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
+            System.out.println("UserController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -95,6 +110,9 @@ public class UserController {
     @PostMapping("/registration")
     public ResponseEntity<?> registration(@RequestBody User userReq) {
         try {
+            if(userReq.getName() == null || userReq.getEmail() == null || userReq.getPassword() == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Empty fields");
+            }
             User user = userService.reg(userReq);
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Already exist");
@@ -102,6 +120,8 @@ public class UserController {
                 return ResponseEntity.ok(user);
             }
         } catch (Exception e) {
+            System.out.println(userReq.getEmail() + " " + userReq.getName() + " " + userReq.getPassword());
+            System.out.println("UserController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -109,6 +129,9 @@ public class UserController {
     @PostMapping("/entrance")
     public ResponseEntity<?> entrance(@RequestBody User userReq) {
         try {
+             if(userReq.getName() == null || userReq.getPassword() == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Empty fields");
+            }
             User user = userService.enter(userReq);
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -116,6 +139,7 @@ public class UserController {
                 return ResponseEntity.ok(user);
             }
         } catch (Exception e) {
+            System.out.println("UserController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -126,6 +150,7 @@ public class UserController {
             List<User> users = userService.getUsersByCorpId(corpId);
             return ResponseEntity.ok(users);
         } catch (Exception e) {
+            System.out.println("UserController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -137,6 +162,7 @@ public class UserController {
             Corporation corporation = corporationService.createCorporation(new Corporation(userService.getUser(corpId), user));
             return ResponseEntity.ok(corporation);
         } catch (Exception e) {
+            System.out.println("UserController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }

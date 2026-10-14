@@ -38,6 +38,7 @@ public class ContractController {
             Contract  contract = contractService.createContract(ContractReq);
             return ResponseEntity.ok(contract);
         } catch (Exception e) {
+            System.out.println("ContractController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -48,6 +49,7 @@ public class ContractController {
             contractService.deleteContract(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            System.out.println("ContractController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -59,6 +61,7 @@ public class ContractController {
             Contract contract = contractService.updateContract(contractReq);
             return ResponseEntity.ok(contract);
         } catch (Exception e) {
+            System.out.println("ContractController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -69,6 +72,7 @@ public class ContractController {
             Contract contract = contractService.getContract(id);
             return ResponseEntity.ok(contract);
         } catch (Exception e) {
+            System.out.println("ContractController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -79,6 +83,7 @@ public class ContractController {
             Contract contract = contractService.getContractByAudio(audioId);
             return ResponseEntity.ok(contract);
         } catch (Exception e) {
+            System.out.println("ContractController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -89,6 +94,7 @@ public class ContractController {
             contractService.deleteContract(contractService.getContractByAudio(audioId).getId());
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            System.out.println("ContractController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -99,6 +105,7 @@ public class ContractController {
             List<Contract> list = contractService.getContractsByUser(creatorId);
             return ResponseEntity.ok(list);
         } catch (Exception e) {
+            System.out.println("ContractController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -109,29 +116,38 @@ public class ContractController {
             List<Contract> list = contractService.getContractsByCorp(corpId);
             return ResponseEntity.ok(list);
         } catch (Exception e) {
+            System.out.println("ContractController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
     @PostMapping("/save/{id}")
     public ResponseEntity<?> saveContract(@PathVariable UUID id, @RequestBody JsonNode contractFile) {
+        try {
+            String link = fileService.saveContract(contractFile);
 
-        String link = fileService.saveContract(contractFile);
+            Contract contract = contractService.getContractByAudio(id);
+            contract.setLink(link);
+            contract = contractService.updateContract(contract);
 
-        Contract contract = contractService.getContractByAudio(id);
-        contract.setLink(link);
-        contract = contractService.updateContract(contract);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(contract);
+            return ResponseEntity.status(HttpStatus.CREATED).body(contract);
+        } catch (Exception e) {
+            System.out.println("ContractController: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<JsonNode> getContractFile(@PathVariable UUID id) {
-        Contract contract = contractService.getContractByAudio(id);
-
-        JsonNode contractFile = fileService.getContract(contract.getLink(), JsonNode.class);
-
-        return ResponseEntity.ok(contractFile);
+    public ResponseEntity<?> getContractFile(@PathVariable UUID id) {
+        try {
+            Contract contract = contractService.getContractByAudio(id);
+            JsonNode contractFile = fileService.getContract(contract.getLink(), JsonNode.class);
+            return ResponseEntity.ok(contractFile);
+        } catch (Exception e) {
+            System.out.println("ContractController: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+        
     }
 }
 

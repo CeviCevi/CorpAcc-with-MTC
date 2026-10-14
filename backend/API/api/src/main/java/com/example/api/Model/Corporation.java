@@ -40,7 +40,7 @@ public class Corporation {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "corp_id", nullable = false)
+    @JoinColumn(name = "corp_id", nullable = false, unique = true)
     private User corpId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -52,7 +52,7 @@ public class Corporation {
     private CorpStatus status = CorpStatus.DEFAULT;
 
     @Column(name = "y")
-    private String y;
+    private String y = "text";
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;

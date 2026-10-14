@@ -39,6 +39,7 @@ public class TranscriptionController {
             Transcription  transcription = transcriptionService.createTranscription(TranscriptionReq);
             return ResponseEntity.ok(transcription);
         } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -49,6 +50,7 @@ public class TranscriptionController {
             transcriptionService.deleteTranscription(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -59,6 +61,7 @@ public class TranscriptionController {
             Transcription transcription = transcriptionService.updateTranscription(transcriptionReq);
             return ResponseEntity.ok(transcription);
         } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -69,6 +72,7 @@ public class TranscriptionController {
             Transcription transcription = transcriptionService.getTranscription(id);
             return ResponseEntity.ok(transcription);
         } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -79,6 +83,7 @@ public class TranscriptionController {
             Transcription transcription = transcriptionService.getTranscriptionByAudio(audioId);
             return ResponseEntity.ok(transcription);
         } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -89,6 +94,7 @@ public class TranscriptionController {
             transcriptionService.deleteTranscription(transcriptionService.getTranscriptionByAudio(audioId).getId());
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -99,6 +105,7 @@ public class TranscriptionController {
             List<Transcription> list = transcriptionService.getTranscriptionsByUser(creatorId);
             return ResponseEntity.ok(list);
         } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -109,6 +116,7 @@ public class TranscriptionController {
             List<Transcription> list = transcriptionService.getTranscriptionsByCorp(corpId);
             return ResponseEntity.ok(list);
         } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -127,16 +135,21 @@ public class TranscriptionController {
             return ResponseEntity.status(HttpStatus.CREATED).body(transcription);
         } catch (Exception e) {
             log.error("transcription callback failed: audioId={}", id, e);
-            throw e;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
     @GetMapping("/get/{id}")
     public ResponseEntity<String> getTranscriptionFile(@PathVariable UUID id) {
-        Transcription transcription = transcriptionService.getTranscriptionByAudio(id);
-        String text = fileService.getTranscription(transcription.getLink());
+        try {
+            Transcription transcription = transcriptionService.getTranscriptionByAudio(id);
+            String text = fileService.getTranscription(transcription.getLink());
 
-        return ResponseEntity.ok(text);
+            return ResponseEntity.ok(text);
+        } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
 }

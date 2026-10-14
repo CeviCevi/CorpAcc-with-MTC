@@ -35,16 +35,16 @@ public class Audio {
     private String link;
 
     @Column(name = "description")
-    private String description;
+    private String description = "text";
 
     @Column(name = "name", nullable = false)
-    private String name;
+    private String name = "text";
 
     @Column(name = "x")
-    private String x;
+    private String x = "text";
 
     @Column(name = "y")
-    private String y;
+    private String y = "text";
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -54,5 +54,8 @@ public class Audio {
         if (createdAt == null) {
             createdAt = Instant.now();
         }
+
+        if (x == null) x = "text";
+        if (y == null) y = "text";
     }
 }

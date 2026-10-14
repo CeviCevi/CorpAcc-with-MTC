@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.api.Model.Audio;
 import com.example.api.Repository.AudioRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -31,9 +33,21 @@ public class AudioService {
         }
     }
 
-    public Audio updateAudio(Audio audio) {
-        return audioRepository.save(audio);
-    }
+    public Audio updateAudio(Audio audioReq) {
+        if (audioReq.getId() == null) {
+            throw new IllegalArgumentException("Для обновления нужен id аудио");
+        }
+
+        Audio audio = audioRepository.findById(audioReq.getId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                    "Audio not found: " + audioReq.getId()
+            ));
+
+        audio.setName(audioReq.getName());
+        audio.setDescription(audioReq.getDescription());
+
+    return audioRepository.save(audio);
+}
 
     public Audio getAudio(UUID id) {
         return audioRepository.findById(id).get();

@@ -38,10 +38,15 @@ public class User {
     private UserStatus status = UserStatus.DEFAULT;
 
     @Column(name = "y")
-    private String y;
+    private String y = "text";
 
     @PrePersist
     protected void onCreate() {
         createdAt = Instant.now();
+
+        if (status == null) {
+            status = UserStatus.DEFAULT;
+        }
+        if (y == null) y = "text";
     }
 }

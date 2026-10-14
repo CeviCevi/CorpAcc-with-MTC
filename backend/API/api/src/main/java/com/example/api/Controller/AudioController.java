@@ -29,6 +29,7 @@ import com.example.api.Service.TranscriptionService;
 import com.example.api.Service.UserService;
 import com.example.api.Service.WebSocketHandler;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +55,7 @@ public class AudioController {
             Audio  audio = audioService.createAudio(AudioReq);
             return ResponseEntity.ok(audio);
         } catch (Exception e) {
+            System.out.println("AudioController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -64,20 +66,25 @@ public class AudioController {
             audioService.deleteAudio(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            System.out.println("AudioController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
     @PutMapping
-    public ResponseEntity<?> updateAudio(@RequestBody Audio audioReq)
-    {
+    public ResponseEntity<?> updateAudio(@RequestBody Audio audioReq) {
         try {
             Audio audio = audioService.updateAudio(audioReq);
             return ResponseEntity.ok(audio);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            System.out.println("AudioController: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(e.getMessage());
         }
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getAudio(@PathVariable UUID id) {
@@ -85,17 +92,19 @@ public class AudioController {
             Audio audio = audioService.getAudio(id);
             return ResponseEntity.ok(audio);
         } catch (Exception e) {
+            System.out.println("AudioController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
         
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<?> getAudiosByUser(@PathVariable UUID creatorId) {
+    public ResponseEntity<?> getAudiosByUser(@PathVariable("id") UUID creatorId) {
         try {
             List<Audio> list = audioService.getAudiosByUser(creatorId);
             return ResponseEntity.ok(list);
         } catch (Exception e) {
+            System.out.println("AudioController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -106,6 +115,7 @@ public class AudioController {
             List<Audio> list = audioService.getAudiosByCorp(corpId);
             return ResponseEntity.ok(list);
         } catch (Exception e) {
+            System.out.println("AudioController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -144,6 +154,7 @@ public class AudioController {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(file);
         } catch (Exception e) {
+            System.out.println("AudioController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -154,6 +165,7 @@ public class AudioController {
             webSocketHandler.sendUuid(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            System.out.println("AudioController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }

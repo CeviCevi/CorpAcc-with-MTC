@@ -33,6 +33,7 @@ public class CorporationController {
             Corporation corporation = corporationService.createCorporation(corporationReq);
             return ResponseEntity.ok(corporation);
         } catch (Exception e) {
+            System.out.println("CorporationController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -43,6 +44,7 @@ public class CorporationController {
             corporationService.deleteCorporation(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            System.out.println("CorporationController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -54,6 +56,7 @@ public class CorporationController {
             Corporation corporation = corporationService.updateCorporation(corporationReq);
             return ResponseEntity.ok(corporation);
         } catch (Exception e) {
+            System.out.println("CorporationController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -64,6 +67,7 @@ public class CorporationController {
             Corporation corporation = corporationService.getCorporation(id);
             return ResponseEntity.ok(corporation);
         } catch (Exception e) {
+            System.out.println("CorporationController: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }

@@ -56,13 +56,13 @@ public class UserService {
         if (user != null) {
             return null;
         } else {
-            return userRepository.save(user);
+            return userRepository.save(userReq);
         }
     }
 
     public User enter(User userReq){
         User user = userRepository.findByEmail(userReq.getEmail());
-        if (user != null && user.getPassword() == userReq.getPassword()){
+        if (user != null && user.getPassword().equals(userReq.getPassword())){
             return user;
         } else {
             return null;

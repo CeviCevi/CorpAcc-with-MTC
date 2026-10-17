@@ -1,6 +1,7 @@
 import 'package:corp_app/app/app_color/app_color.dart';
 import 'package:corp_app/data/model/user_model.dart';
 import 'package:corp_app/domain/service/user_service.dart';
+import 'package:corp_app/presentation/old/widget/custom_text_field/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
 class WorkScreen extends StatefulWidget {
@@ -73,52 +74,61 @@ class _WorkScreenState extends State<WorkScreen> {
 
   Future<void> _showAddDialog() async {
     final emailController = TextEditingController();
+    bool submitted = false;
 
-    final email = await showDialog<String>(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('Добавить сотрудника'),
-          content: TextField(
-            controller: emailController,
-            keyboardType: TextInputType.emailAddress,
-            autofocus: true,
-            decoration: const InputDecoration(
-              labelText: 'Электронная почта',
-              hintText: 'worker@example.com',
-              prefixIcon: Icon(Icons.email_outlined),
-              border: OutlineInputBorder(),
+    try {
+      final email = await showDialog<String>(
+        context: context,
+        builder: (dialogContext) {
+          void submit() {
+            if (submitted) return;
+
+            submitted = true;
+            Navigator.of(dialogContext).pop(emailController.text.trim());
+          }
+
+          return AlertDialog(
+            title: const Text('Добавить сотрудника'),
+            iconColor: AppColor.green,
+            content: TextField(
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.done,
+              autofocus: true,
+              decoration: const InputDecoration(
+                labelText: 'Электронная почта',
+                hintText: 'worker@example.com',
+                prefixIcon: Icon(Icons.email_outlined),
+                border: OutlineInputBorder(),
+              ),
+              onSubmitted: (_) => submit(),
             ),
-            onSubmitted: (value) {
-              Navigator.of(dialogContext).pop(value.trim());
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Отмена'),
-            ),
-            FilledButton(
-              onPressed: () {
-                Navigator.of(dialogContext).pop(emailController.text.trim());
-              },
-              child: const Text('Добавить'),
-            ),
-          ],
-        );
-      },
-    );
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
+                },
+                child: const Text('Отмена'),
+              ),
+              FilledButton(onPressed: submit, child: const Text('Добавить')),
+            ],
+          );
+        },
+      );
 
-    emailController.dispose();
+      if (!mounted || email == null || email.isEmpty) return;
 
-    if (email == null || email.isEmpty) return;
+      if (!email.contains('@') ||
+          email.startsWith('@') ||
+          email.endsWith('@')) {
+        _showMessage('Введите корректный email');
+        return;
+      }
 
-    if (!email.contains('@') || email.startsWith('@')) {
-      _showMessage('Введите корректный email');
-      return;
+      await _addWorker(email);
+    } finally {
+      emailController.dispose();
     }
-
-    await _addWorker(email);
   }
 
   Future<void> _addWorker(String email) async {
@@ -274,61 +284,41 @@ class _WorkScreenState extends State<WorkScreen> {
     final workers = _filteredWorkers;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Сотрудники'),
-        actions: [
-          IconButton(
-            tooltip: 'Обновить список',
-            onPressed: _isLoading ? null : _loadWorkers,
-            icon: const Icon(Icons.refresh),
+      floatingActionButton: Column(
+        children: [
+          SizedBox(height: 350),
+          FloatingActionButton.extended(
+            onPressed: _isAdding ? null : _showAddDialog,
+            backgroundColor: AppColor.green,
+            foregroundColor: Colors.white,
+            icon: _isAdding
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  )
+                : const Icon(Icons.person_add_alt_1),
+            label: Text(_isAdding ? 'Добавление...' : 'Добавить'),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _isAdding ? null : _showAddDialog,
-        backgroundColor: AppColor.green,
-        foregroundColor: Colors.white,
-        icon: _isAdding
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white,
-                ),
-              )
-            : const Icon(Icons.person_add_alt_1),
-        label: Text(_isAdding ? 'Добавление...' : 'Добавить'),
       ),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-            child: TextField(
+            child: CustomTextField(
               controller: _searchController,
               onChanged: (value) {
                 setState(() {
                   _searchQuery = value;
                 });
               },
-              decoration: InputDecoration(
-                hintText: 'Поиск по имени, email или ID',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() {
-                            _searchQuery = '';
-                          });
-                        },
-                        icon: const Icon(Icons.close),
-                      )
-                    : null,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              ),
+              hint: 'Поиск email',
+              prefixIcon: const Icon(Icons.search),
+              focusedBorderColor: AppColor.green,
             ),
           ),
           Padding(
@@ -353,7 +343,7 @@ class _WorkScreenState extends State<WorkScreen> {
                         ? ListView(
                             physics: const AlwaysScrollableScrollPhysics(),
                             children: [
-                              const SizedBox(height: 100),
+                              const SizedBox(height: 30),
                               Icon(
                                 _searchQuery.isNotEmpty
                                     ? Icons.search_off

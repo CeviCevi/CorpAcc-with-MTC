@@ -133,7 +133,6 @@ class _StatusScreenState extends State<StatusScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Тип аккаунта'), centerTitle: true),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),

@@ -206,7 +206,7 @@ class NavigationScreenState extends State<NavigationScreen> {
                               ),
                               if (ShortDb.instance.userInSystem.role == "CORP")
                                 NavItem(
-                                  label: 'Работники',
+                                  label: 'Сотрудники',
                                   onTap: () => _rewriteAndClose(3),
                                   isActive: _checkScreen(3),
                                 ),

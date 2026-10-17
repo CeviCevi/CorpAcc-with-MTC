@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:corp_app/app/app_path/app_path.dart';
@@ -247,10 +248,10 @@ class AudioService {
     final response = await WebRepository.getHttp(
       path: '${AppPath.audioGetAllByCorpId}/$corpId',
     );
-
-    if (response.containsKey('error')) {
-      throw Exception(response['error']);
-    }
+    log(response.toString());
+    // if (response.containsKey('error')) {
+    //   throw Exception(response['error']);
+    // }
 
     final audios = _asList(response['data'] ?? response['audios'] ?? response)
         .whereType<Map>()

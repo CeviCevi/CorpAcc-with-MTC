@@ -87,7 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Expanded(
                 child: ProfileBox(
-                  label: DateService.dateParser(
+                  label: DateService.dateParser2(
                     ShortDb.instance.userInSystem.createAt,
                   ),
                   boxName: "дата создания",

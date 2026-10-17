@@ -114,7 +114,7 @@ class _AudioScreenState extends State<AudioScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: Text(
-              DateService.dateParser(widget.audio.createAt),
+              DateService.dateParser2(widget.audio.createAt),
               style: TextStyle(color: AppColor.textMuted, fontSize: 12),
             ),
           ),

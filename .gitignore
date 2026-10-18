@@ -1,0 +1,103 @@
+# Python virtual environments (never commit installed packages)
+.venv/
+.venv*/
+venv/
+env/
+ENV/
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local IDE and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local settings/secrets
+.env
+.env.*
+!.env.example
+
+# Downloaded model weights and model folders
+models/
+**/models/
+checkpoints/
+**/checkpoints/
+weights/
+**/weights/
+*.safetensors
+pytorch_model*.bin
+model-*.bin
+*.pt
+*.pth
+*.onnx
+
+# Audio/video inputs and generated normalized audio (keep private files out of Git)
+*.mp3
+*.wav
+*.m4a
+*.mp4
+*.flac
+*.ogg
+*.opus
+*.aac
+*.wma
+*.aiff
+*.aif
+
+# Pipeline output and temporary analysis data
+output/
+outputs/
+results/
+runs/
+logs/
+*.rttm
+*.log
+qwen_progress.json
+qwen_result.txt
+
+# Temporary archives produced while preparing source for review
+*_source_for_review.zip
+1
+1
+1
+1
+1
+1
+1
+1
+
+# Local neural network models
+models/whisper/
+models/qwen/*.gguf
+models/whisper/**
+models/qwen/*.gguf
+
+# Local neural network models
+/models/whisper/
+/models/qwen/*.gguf
+
+# Local models and environments
+models/
+**/models/
+.venv/
+.venv_*/
+__pycache__/
+*.pyc
+*.gguf
+
+# Local audio and generated output
+input/
+output/
+*.mp3
+*.wav
+.gitignore.backup

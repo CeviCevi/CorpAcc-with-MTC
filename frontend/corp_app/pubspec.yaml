@@ -1,0 +1,42 @@
+name: corp_app
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.4
+
+dependencies:
+  dio: ^5.11.1
+  shared_preferences: ^2.5.6 
+  path_provider: ^2.1.6
+  drift:
+  window_manager:
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^9.1.1
+  json_annotation: ^4.12.0
+  loading_animation_widget:
+  audioplayers:
+  ffmpeg_kit_flutter_new: ^4.6.7
+  record: ^7.1.2
+  path: ^1.9.1
+  printing: ^5.15.1
+  icons_launcher: ^3.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  drift_dev: 
+  build_runner:
+flutter:
+  uses-material-design: true
+
+
+icons_launcher:
+  image_path: "assets/1.png"
+  platforms:
+    windows:
+      enable: true
+

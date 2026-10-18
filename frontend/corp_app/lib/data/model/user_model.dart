@@ -1,0 +1,72 @@
+import 'dart:developer';
+
+class UserModel {
+  final String id;
+  final String login;
+  final String email;
+  final String password;
+  final String image;
+  final String role;
+  final String createAt;
+
+  const new({
+    required this.id,
+    required this.login,
+    required this.email,
+    required this.password,
+    required this.image,
+    required this.role,
+    required this.createAt,
+  });
+
+  @override
+  String toString() {
+    return 'UserModel{id=$id, login=$login, email=$email, password=$password, image=$image, role=$role, createAt=$createAt}';
+  }
+
+  static const empty = UserModel(
+    id: "",
+    login: "",
+    email: "",
+    password: "",
+    image: "",
+    role: "DEFAULT",
+    createAt: "",
+  );
+
+  void print() {
+    log(toString());
+  }
+
+  UserModel copyWith({
+    String? id,
+    String? login,
+    String? email,
+    String? password,
+    String? image,
+    String? role,
+    String? createAt,
+    UserModel? model,
+  }) {
+    return model ??
+        UserModel(
+          id: id ?? this.id,
+          login: login ?? this.login,
+          email: email ?? this.email,
+          password: password ?? this.password,
+          image: image ?? this.image,
+          role: role ?? this.role,
+          createAt: createAt ?? this.createAt,
+        );
+  }
+
+  Map<String, dynamic> toJson() => {
+    //'id': id,
+    'name': login,
+    'email': email,
+    'password': password,
+    //'status': role,
+    //'y': image,
+    //'created_at': createAt,
+  };
+}

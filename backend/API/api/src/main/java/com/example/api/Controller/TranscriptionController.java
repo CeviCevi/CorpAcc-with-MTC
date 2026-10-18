@@ -1,0 +1,155 @@
+package com.example.api.Controller;
+
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.api.Model.Transcription;
+import com.example.api.Service.FileService;
+import com.example.api.Service.TranscriptionService;
+
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j 
+@RestController 
+@RequestMapping ("/api/transcriptions")
+@AllArgsConstructor 
+
+
+public class TranscriptionController {
+
+    private TranscriptionService transcriptionService;
+    private FileService fileService;
+
+    @PostMapping 
+    public ResponseEntity<?> createTranscription (@Valid @RequestBody Transcription TranscriptionReq){
+        try {
+            Transcription  transcription = transcriptionService.createTranscription(TranscriptionReq);
+            return ResponseEntity.ok(transcription);
+        } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable UUID id) {
+        try {
+            transcriptionService.deleteTranscription(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updateTranscription(@RequestBody Transcription transcriptionReq) {
+        try {
+            Transcription transcription = transcriptionService.updateTranscription(transcriptionReq);
+            return ResponseEntity.ok(transcription);
+        } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getTranscription(@PathVariable UUID id) {
+        try {
+            Transcription transcription = transcriptionService.getTranscription(id);
+            return ResponseEntity.ok(transcription);
+        } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/audio/{id}")
+    public ResponseEntity<?> getTranscriptionByAudio(@PathVariable UUID audioId) {
+        try {
+            Transcription transcription = transcriptionService.getTranscriptionByAudio(audioId);
+            return ResponseEntity.ok(transcription);
+        } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+    
+    @DeleteMapping("/audio/{id}")
+    public ResponseEntity<?> deleteTranscriptionByAudio(@PathVariable UUID audioId) {
+        try {
+            transcriptionService.deleteTranscription(transcriptionService.getTranscriptionByAudio(audioId).getId());
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<?> getContractsByUser(@PathVariable UUID creatorId) {
+        try {
+            List<Transcription> list = transcriptionService.getTranscriptionsByUser(creatorId);
+            return ResponseEntity.ok(list);
+        } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+    
+    @GetMapping("/corp/{id}")
+    public ResponseEntity<?> getContractsByCorp(@PathVariable UUID corpId) {
+        try {
+            List<Transcription> list = transcriptionService.getTranscriptionsByCorp(corpId);
+            return ResponseEntity.ok(list);
+        } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/save/{id}")
+    public ResponseEntity<?> saveTranscriptionFile(@PathVariable("id") UUID id, @RequestBody String text) {
+        try {
+            String link = fileService.saveTranscription(text);
+            log.info("transcription file saved: audioId={}, link={}", id, link);
+
+            Transcription transcription = transcriptionService.getTranscriptionByAudio(id);
+            transcription.setLink(link);
+            transcription = transcriptionService.updateTranscription(transcription);
+
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(transcription);
+        } catch (Exception e) {
+            log.error("transcription callback failed: audioId={}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<String> getTranscriptionFile(@PathVariable UUID id) {
+        try {
+            Transcription transcription = transcriptionService.getTranscriptionByAudio(id);
+            String text = fileService.getTranscription(transcription.getLink());
+
+            return ResponseEntity.ok(text);
+        } catch (Exception e) {
+            System.out.println("TranscriptionController: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+}
